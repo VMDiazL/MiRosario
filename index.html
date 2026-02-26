@@ -11,33 +11,24 @@
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap"
       rel="stylesheet"
     />
-
     <style>
       :root {
         --gold: #c9a84c;
         --gold-light: #e8cc80;
         --gold-dim: #8a6f30;
         --bg-deep: #080b12;
-        --bg-panel: #0d1220;
         --bg-card: #111827;
         --text: #e8dfc8;
         --text-dim: #9a8e78;
-        --active: #22c55e;
-        --next: #e8cc80;
-        --oracion-bg: #0a1018;
         --border: rgba(201, 168, 76, 0.18);
       }
 
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-
-      /* Force colors — prevent iOS/Android from overriding */
       *,
       *::before,
       *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
         -webkit-text-fill-color: unset;
         -webkit-tap-highlight-color: transparent;
       }
@@ -50,16 +41,13 @@
 
       body {
         background: #080b12 !important;
-        background-color: #080b12 !important;
         color: #e8dfc8 !important;
         font-family: "EB Garamond", Georgia, serif;
         min-height: 100vh;
         overflow-x: hidden;
         -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
       }
 
-      /* Background atmosphere */
       body::before {
         content: "";
         position: fixed;
@@ -78,8 +66,6 @@
         pointer-events: none;
         z-index: 0;
       }
-
-      /* Grain overlay */
       body::after {
         content: "";
         position: fixed;
@@ -93,7 +79,7 @@
       #app {
         position: relative;
         z-index: 1;
-        max-width: 775px;
+        max-width: 720px;
         margin: 0 auto;
         padding: 20px 16px 60px;
       }
@@ -104,15 +90,12 @@
         padding: 36px 0 28px;
         animation: fadeDown 0.8s ease both;
       }
-
       .header-icon {
         font-size: 36px;
         display: block;
         margin-bottom: 12px;
-        filter: drop-shadow(0 0 16px rgba(201, 168, 76, 0.5));
         animation: pulse-glow 4s ease-in-out infinite;
       }
-
       @keyframes pulse-glow {
         0%,
         100% {
@@ -122,16 +105,14 @@
           filter: drop-shadow(0 0 24px rgba(201, 168, 76, 0.8));
         }
       }
-
       .header h1 {
         font-family: "Cinzel", serif;
         font-size: clamp(22px, 5vw, 32px);
         font-weight: 700;
         letter-spacing: 0.12em;
-        color: var(--gold-light);
+        color: var(--gold-light) !important;
         text-shadow: 0 0 30px rgba(201, 168, 76, 0.3);
       }
-
       .header-divider {
         display: flex;
         align-items: center;
@@ -139,7 +120,6 @@
         margin: 14px auto;
         max-width: 320px;
       }
-
       .header-divider::before,
       .header-divider::after {
         content: "";
@@ -152,7 +132,6 @@
           transparent
         );
       }
-
       .header-divider span {
         color: var(--gold);
         font-size: 18px;
@@ -161,9 +140,9 @@
       .misterio-badge {
         display: inline-block;
         font-family: "Cinzel", serif;
-        font-size: 12px;
-        letter-spacing: 0.2em;
-        color: var(--gold-dim);
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        color: var(--gold-light) !important;
         text-transform: uppercase;
         background: rgba(201, 168, 76, 0.07);
         border: 1px solid var(--border);
@@ -171,7 +150,7 @@
         padding: 5px 16px;
       }
 
-      /* Progress bar */
+      /* Progress */
       .progress-bar {
         position: fixed;
         top: 0;
@@ -183,57 +162,309 @@
         box-shadow: 0 0 8px rgba(201, 168, 76, 0.6);
       }
 
-      /* Nav pills */
+      /* Counter */
+      .counter {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(201, 168, 76, 0.07) !important;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 5px 14px;
+        font-family: "Cinzel", serif;
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        color: var(--gold-light) !important;
+        margin-bottom: 20px;
+      }
+      .counter strong {
+        color: var(--gold) !important;
+      }
+
+      /* Separator */
+      .separator {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 24px 0;
+      }
+      .separator::before,
+      .separator::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--border),
+          transparent
+        );
+      }
+      .separator span {
+        font-family: "Cinzel", serif;
+        font-size: 10px;
+        letter-spacing: 0.25em;
+        color: var(--gold-dim) !important;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      /* Nav section */
       .nav-section {
         margin-bottom: 20px;
         animation: fadeUp 0.6s ease both;
         animation-delay: 0.15s;
       }
-
       .nav-label {
         font-family: "Cinzel", serif;
         font-size: 10px;
         letter-spacing: 0.25em;
-        color: var(--gold-dim);
+        color: var(--gold) !important;
         text-transform: uppercase;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
         padding-left: 2px;
       }
 
+      /* ── KEY CHANGE: grid instead of flex-wrap ── */
       .nav-pills {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 8px;
       }
 
       .nav-pill {
-        background: rgba(201, 168, 76, 0.05);
-        color: var(--text-dim);
+        background: rgba(201, 168, 76, 0.06) !important;
+        color: var(--text) !important;
         border: 1px solid var(--border);
-        padding: 6px 14px;
-        border-radius: 24px;
+        padding: 13px 8px;
+        border-radius: 10px;
         cursor: pointer;
         font-family: "EB Garamond", serif;
-        font-size: 13px;
-        transition: all 0.25s;
-        white-space: nowrap;
+        font-size: 15px;
+        line-height: 1.25;
+        transition: all 0.18s;
+        text-align: center;
+        min-height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        touch-action: manipulation;
+        -webkit-appearance: none;
       }
-
+      .nav-pill:active {
+        transform: scale(0.95);
+      }
       .nav-pill:hover {
-        background: rgba(201, 168, 76, 0.12);
-        color: var(--gold-light);
+        background: rgba(201, 168, 76, 0.14) !important;
+        color: var(--gold-light) !important;
         border-color: var(--gold-dim);
       }
-
       .nav-pill.active {
-        background: rgba(34, 197, 94, 0.12);
-        color: #86efac;
-        border-color: rgba(34, 197, 94, 0.4);
+        background: rgba(34, 197, 94, 0.13) !important;
+        color: #86efac !important;
+        border-color: rgba(34, 197, 94, 0.45);
+      }
+      .nav-pill.next {
+        border-color: rgba(232, 204, 128, 0.5);
+        color: var(--gold) !important;
       }
 
-      .nav-pill.next {
-        border-color: rgba(232, 204, 128, 0.45);
-        color: var(--gold);
+      /* Misterio type strip — pill-shaped horizontal scroll */
+      #misterioSel {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto;
+        gap: 8px;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      #misterioSel::-webkit-scrollbar {
+        display: none;
+      }
+      #misterioSel .nav-pill {
+        flex: 0 0 auto !important;
+        min-width: 100px;
+        border-radius: 24px !important;
+        padding: 9px 18px !important;
+        min-height: 40px !important;
+        font-size: 14px !important;
+      }
+
+      /* Mini buttons — grid inside misterio */
+      .misterio-oraciones {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        gap: 7px;
+        margin-top: 6px;
+      }
+      .mini-btn {
+        background: rgba(201, 168, 76, 0.06) !important;
+        border: 1px solid var(--border);
+        color: var(--text) !important;
+        padding: 10px 8px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: "EB Garamond", serif;
+        font-size: 14px;
+        line-height: 1.2;
+        text-align: center;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.18s;
+        touch-action: manipulation;
+        -webkit-appearance: none;
+      }
+      .mini-btn:active {
+        transform: scale(0.95);
+      }
+      .mini-btn:hover {
+        background: rgba(201, 168, 76, 0.14) !important;
+        color: var(--gold-light) !important;
+        border-color: var(--gold-dim);
+      }
+      .mini-btn.active {
+        background: rgba(34, 197, 94, 0.1) !important;
+        color: #86efac !important;
+        border-color: rgba(34, 197, 94, 0.35);
+      }
+
+      /* Misterio cards */
+      .misterio-section {
+        margin-bottom: 16px;
+        animation: fadeUp 0.5s ease both;
+      }
+      .misterio-card {
+        background: #111827 !important;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+      .misterio-header {
+        padding: 14px 18px;
+        background: linear-gradient(
+          135deg,
+          rgba(201, 168, 76, 0.08) 0%,
+          rgba(17, 24, 39, 0) 100%
+        ) !important;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.2s;
+      }
+      .misterio-header:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(201, 168, 76, 0.14) 0%,
+          rgba(17, 24, 39, 0) 100%
+        ) !important;
+      }
+      .misterio-num {
+        font-family: "Cinzel", serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--gold-dim) !important;
+        min-width: 32px;
+        line-height: 1;
+      }
+      .misterio-info {
+        flex: 1;
+      }
+      .misterio-title {
+        font-family: "Cinzel", serif;
+        font-size: 13px;
+        color: var(--gold-light) !important;
+        letter-spacing: 0.05em;
+        margin-bottom: 2px;
+      }
+      .misterio-desc {
+        font-size: 13px;
+        color: var(--text-dim) !important;
+        font-style: italic;
+      }
+      .misterio-fruto {
+        font-size: 11px;
+        color: var(--gold) !important;
+        letter-spacing: 0.08em;
+        font-family: "Cinzel", serif;
+        margin-top: 3px;
+      }
+      .misterio-toggle {
+        color: var(--gold-dim) !important;
+        font-size: 14px;
+        transition: transform 0.3s;
+      }
+      .misterio-content {
+        padding: 16px 18px;
+        display: none;
+        background: #111827 !important;
+      }
+      .misterio-content.open {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
+
+      /* Cuentas */
+      .decena-label {
+        font-family: "Cinzel", serif;
+        font-size: 10px;
+        letter-spacing: 0.2em;
+        color: var(--gold-light) !important;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+      .cuentas {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 10px 0 14px;
+      }
+      .cuenta {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: rgba(71, 85, 105, 0.6);
+        border: 1px solid rgba(201, 168, 76, 0.15);
+        cursor: pointer;
+        transition: all 0.2s;
+        touch-action: manipulation;
+      }
+      .cuenta:hover {
+        transform: scale(1.15);
+        border-color: var(--gold-dim);
+      }
+      .cuenta.rezada {
+        background: radial-gradient(
+          circle at 35% 35%,
+          var(--gold-light),
+          var(--gold-dim)
+        );
+        border-color: var(--gold);
+        box-shadow: 0 0 8px rgba(201, 168, 76, 0.4);
+      }
+      .cuentas-reset {
+        font-size: 11px;
+        color: var(--text-dim) !important;
+        cursor: pointer;
+        font-family: "Cinzel", serif;
+        letter-spacing: 0.1em;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        opacity: 0.6;
+        transition: opacity 0.2s;
+        background: transparent !important;
+        border: none;
+        padding: 0;
+      }
+      .cuentas-reset:hover {
+        opacity: 1;
       }
 
       /* Oración modal */
@@ -248,14 +479,12 @@
         justify-content: center;
         padding: 16px;
       }
-
       .oracion-overlay.open {
         display: flex;
         animation: fadeIn 0.2s ease;
       }
-
       .oracion-modal {
-        background: var(--bg-card);
+        background: #111827 !important;
         border: 1px solid rgba(201, 168, 76, 0.3);
         border-radius: 16px;
         width: 100%;
@@ -268,7 +497,6 @@
           0 0 0 1px rgba(201, 168, 76, 0.05) inset;
         animation: modalIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) both;
       }
-
       @keyframes modalIn {
         from {
           opacity: 0;
@@ -285,25 +513,23 @@
         align-items: center;
         justify-content: space-between;
         padding: 16px 20px;
-        background: rgba(201, 168, 76, 0.06);
+        background: rgba(201, 168, 76, 0.06) !important;
         border-bottom: 1px solid var(--border);
         border-radius: 16px 16px 0 0;
         flex-shrink: 0;
       }
-
       .oracion-titulo {
         font-family: "Cinzel", serif;
         font-size: 13px;
         letter-spacing: 0.1em;
-        color: var(--gold);
+        color: var(--gold) !important;
       }
-
       .modal-close {
-        background: rgba(201, 168, 76, 0.06);
+        background: rgba(201, 168, 76, 0.06) !important;
         border: 1px solid var(--border);
-        color: var(--text-dim);
-        width: 30px;
-        height: 30px;
+        color: var(--text-dim) !important;
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
         cursor: pointer;
         font-size: 13px;
@@ -312,24 +538,23 @@
         justify-content: center;
         transition: all 0.2s;
         flex-shrink: 0;
+        touch-action: manipulation;
       }
-
       .modal-close:hover {
-        background: rgba(201, 168, 76, 0.15);
-        color: var(--gold-light);
-        border-color: var(--gold-dim);
+        background: rgba(201, 168, 76, 0.15) !important;
+        color: var(--gold-light) !important;
       }
 
       .oracion-modal-body {
-        padding: 28px 28px 20px;
+        padding: 28px 24px 20px;
         overflow-y: auto;
         flex: 1;
+        background: #111827 !important;
       }
-
       .oracion-texto {
-        font-size: clamp(16px, 3.5vw, 20px);
-        line-height: 1.9;
-        color: var(--text);
+        font-size: clamp(17px, 4vw, 21px);
+        line-height: 1.95;
+        color: #e8dfc8 !important;
         white-space: pre-line;
         letter-spacing: 0.01em;
       }
@@ -337,269 +562,125 @@
       .oracion-modal-footer {
         display: flex;
         justify-content: space-between;
-        padding: 12px 20px;
+        gap: 8px;
+        padding: 12px 16px;
         border-top: 1px solid var(--border);
-        background: rgba(201, 168, 76, 0.03);
+        background: rgba(201, 168, 76, 0.03) !important;
         border-radius: 0 0 16px 16px;
         flex-shrink: 0;
       }
-
       .modal-nav-btn {
-        background: rgba(201, 168, 76, 0.07);
+        flex: 1;
+        background: rgba(201, 168, 76, 0.07) !important;
         border: 1px solid var(--border);
-        color: var(--gold-dim);
-        padding: 7px 16px;
+        color: var(--gold-dim) !important;
+        padding: 12px 10px;
         border-radius: 8px;
         cursor: pointer;
         font-family: "Cinzel", serif;
         font-size: 12px;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.06em;
         transition: all 0.2s;
+        min-height: 44px;
+        touch-action: manipulation;
       }
-
       .modal-nav-btn:hover:not(:disabled) {
-        background: rgba(201, 168, 76, 0.16);
-        color: var(--gold-light);
+        background: rgba(201, 168, 76, 0.16) !important;
+        color: var(--gold-light) !important;
         border-color: var(--gold-dim);
       }
-
       .modal-nav-btn:disabled {
         opacity: 0.25;
         cursor: not-allowed;
       }
 
-      /* Misterio section */
-      .misterio-section {
-        margin-bottom: 16px;
-        animation: fadeUp 0.5s ease both;
-      }
-
-      .misterio-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      }
-
-      .misterio-header {
-        padding: 14px 18px;
-        background: linear-gradient(
-          135deg,
-          rgba(201, 168, 76, 0.08) 0%,
-          transparent 100%
-        );
-        border-bottom: 1px solid var(--border);
-        display: flex;
+      /* Timer modal */
+      .timer-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(8, 11, 18, 0.85);
+        backdrop-filter: blur(6px);
+        z-index: 300;
         align-items: center;
-        gap: 12px;
-        cursor: pointer;
-        user-select: none;
-        transition: background 0.2s;
+        justify-content: center;
       }
-
-      .misterio-header:hover {
-        background: linear-gradient(
-          135deg,
-          rgba(201, 168, 76, 0.14) 0%,
-          transparent 100%
-        );
+      .timer-overlay.open {
+        display: flex;
+        animation: fadeIn 0.25s ease;
       }
-
-      .misterio-num {
-        font-family: "Cinzel", serif;
-        font-size: 22px;
-        font-weight: 700;
-        color: var(--gold-dim);
-        min-width: 32px;
-        line-height: 1;
+      .timer-box {
+        background: #111827 !important;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 32px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        min-width: 260px;
       }
-
-      .misterio-info {
-        flex: 1;
-      }
-
-      .misterio-title {
+      .timer-title {
         font-family: "Cinzel", serif;
         font-size: 13px;
-        color: var(--gold-light);
-        letter-spacing: 0.05em;
-        margin-bottom: 2px;
+        color: var(--gold-dim) !important;
+        letter-spacing: 0.15em;
+        margin-bottom: 6px;
+      }
+      .timer-display {
+        font-family: "Cinzel", serif;
+        font-size: 52px;
+        color: var(--gold-light) !important;
+        margin: 10px 0;
+        text-shadow: 0 0 20px rgba(201, 168, 76, 0.4);
+      }
+      .timer-circle {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 16px;
+      }
+      .timer-circle svg {
+        transform: rotate(-90deg);
+      }
+      .timer-ring-bg {
+        fill: none;
+        stroke: rgba(201, 168, 76, 0.1);
+        stroke-width: 4;
+      }
+      .timer-ring-fill {
+        fill: none;
+        stroke: var(--gold);
+        stroke-width: 4;
+        stroke-linecap: round;
+        stroke-dasharray: 339;
+        stroke-dashoffset: 0;
+        transition: stroke-dashoffset 1s linear;
+        filter: drop-shadow(0 0 4px rgba(201, 168, 76, 0.6));
+      }
+      .timer-btn {
+        background: rgba(201, 168, 76, 0.1) !important;
+        border: 1px solid var(--border);
+        color: var(--gold) !important;
+        padding: 10px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: "Cinzel", serif;
+        font-size: 12px;
+        letter-spacing: 0.1em;
+        transition: all 0.2s;
+        margin: 4px;
+        min-height: 44px;
+        touch-action: manipulation;
+      }
+      .timer-btn:hover {
+        background: rgba(201, 168, 76, 0.2) !important;
       }
 
-      .misterio-desc {
-        font-size: 12px;
-        color: var(--text-dim);
+      /* Footer */
+      .footer {
+        text-align: center;
+        margin-top: 40px;
+        color: var(--text-dim) !important;
+        font-size: 13px;
         font-style: italic;
-      }
-
-      .misterio-fruto {
-        font-size: 11px;
-        color: var(--gold-dim);
-        letter-spacing: 0.08em;
-        font-family: "Cinzel", serif;
-      }
-
-      .misterio-toggle {
-        color: var(--gold-dim);
-        font-size: 14px;
-        transition: transform 0.3s;
-      }
-
-      .misterio-content {
-        padding: 16px 18px;
-        display: none;
-      }
-
-      .misterio-content.open {
-        display: block;
-        animation: fadeIn 0.3s ease;
-      }
-
-      /* Decena (rosario beads) */
-      .decena-label {
-        font-family: "Cinzel", serif;
-        font-size: 10px;
-        letter-spacing: 0.2em;
-        color: var(--gold-dim);
-        text-transform: uppercase;
-        margin-bottom: 8px;
-      }
-
-      .cuentas {
-        display: flex;
-        gap: 7px;
-        flex-wrap: wrap;
-        margin: 10px 0 16px;
-      }
-
-      .cuenta {
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: rgba(71, 85, 105, 0.6);
-        border: 1px solid rgba(201, 168, 76, 0.15);
-        cursor: pointer;
-        transition: all 0.2s;
-        position: relative;
-      }
-
-      .cuenta:hover {
-        transform: scale(1.15);
-        border-color: var(--gold-dim);
-      }
-
-      .cuenta.rezada {
-        background: radial-gradient(
-          circle at 35% 35%,
-          var(--gold-light),
-          var(--gold-dim)
-        );
-        border-color: var(--gold);
-        box-shadow: 0 0 8px rgba(201, 168, 76, 0.4);
-      }
-
-      .cuentas-reset {
-        font-size: 11px;
-        color: var(--text-dim);
-        cursor: pointer;
-        font-family: "Cinzel", serif;
-        letter-spacing: 0.1em;
-        text-decoration: underline;
-        text-underline-offset: 3px;
-        opacity: 0.6;
-        transition: opacity 0.2s;
-        background: none;
-        border: none;
-        display: inline;
-        padding: 0;
-        margin: 0;
-      }
-
-      .cuentas-reset:hover {
-        opacity: 1;
-      }
-
-      /* Mini oracion buttons inside misterio */
-      .misterio-oraciones {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
-        margin-top: 6px;
-      }
-
-      .mini-btn {
-        background: rgba(201, 168, 76, 0.05);
-        border: 1px solid var(--border);
-        color: var(--text-dim);
-        padding: 5px 12px;
-        border-radius: 20px;
-        cursor: pointer;
-        font-family: "EB Garamond", serif;
-        font-size: 12px;
-        transition: all 0.2s;
-      }
-
-      .mini-btn:hover {
-        background: rgba(201, 168, 76, 0.12);
-        color: var(--gold-light);
-        border-color: var(--gold-dim);
-      }
-
-      .mini-btn.active {
-        background: rgba(34, 197, 94, 0.1);
-        color: #86efac;
-        border-color: rgba(34, 197, 94, 0.35);
-      }
-
-      /* Separator */
-      .separator {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin: 24px 0;
-      }
-
-      .separator::before,
-      .separator::after {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          var(--border),
-          transparent
-        );
-      }
-
-      .separator span {
-        font-family: "Cinzel", serif;
-        font-size: 10px;
-        letter-spacing: 0.25em;
-        color: var(--gold-dim);
-        text-transform: uppercase;
-        white-space: nowrap;
-      }
-
-      /* Counter badge */
-      .counter {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: rgba(201, 168, 76, 0.07);
-        border: 1px solid var(--border);
-        border-radius: 20px;
-        padding: 4px 12px;
-        font-family: "Cinzel", serif;
-        font-size: 11px;
-        color: var(--gold-dim);
-        letter-spacing: 0.1em;
-        margin-bottom: 16px;
-      }
-
-      .counter strong {
-        color: var(--gold);
       }
 
       /* Animations */
@@ -613,7 +694,6 @@
           transform: translateY(0);
         }
       }
-
       @keyframes fadeUp {
         from {
           opacity: 0;
@@ -624,7 +704,6 @@
           transform: translateY(0);
         }
       }
-
       @keyframes fadeIn {
         from {
           opacity: 0;
@@ -632,254 +711,6 @@
         to {
           opacity: 1;
         }
-      }
-
-      /* Timer modal */
-      .timer-overlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(8, 11, 18, 0.85);
-        backdrop-filter: blur(6px);
-        z-index: 200;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .timer-overlay.open {
-        display: flex;
-        animation: fadeIn 0.25s ease;
-      }
-
-      .timer-box {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 32px;
-        text-align: center;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-        min-width: 260px;
-      }
-
-      .timer-title {
-        font-family: "Cinzel", serif;
-        font-size: 13px;
-        color: var(--gold-dim);
-        letter-spacing: 0.15em;
-        margin-bottom: 6px;
-      }
-
-      .timer-display {
-        font-family: "Cinzel", serif;
-        font-size: 52px;
-        color: var(--gold-light);
-        margin: 10px 0;
-        text-shadow: 0 0 20px rgba(201, 168, 76, 0.4);
-      }
-
-      .timer-circle {
-        width: 120px;
-        height: 120px;
-        margin: 0 auto 16px;
-      }
-
-      .timer-circle svg {
-        transform: rotate(-90deg);
-      }
-
-      .timer-ring-bg {
-        fill: none;
-        stroke: rgba(201, 168, 76, 0.1);
-        stroke-width: 4;
-      }
-
-      .timer-ring-fill {
-        fill: none;
-        stroke: var(--gold);
-        stroke-width: 4;
-        stroke-linecap: round;
-        stroke-dasharray: 339;
-        stroke-dashoffset: 0;
-        transition: stroke-dashoffset 1s linear;
-        filter: drop-shadow(0 0 4px rgba(201, 168, 76, 0.6));
-      }
-
-      .timer-btn {
-        background: rgba(201, 168, 76, 0.1);
-        border: 1px solid var(--border);
-        color: var(--gold);
-        padding: 8px 20px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-family: "Cinzel", serif;
-        font-size: 12px;
-        letter-spacing: 0.1em;
-        transition: all 0.2s;
-        margin: 4px;
-      }
-
-      .timer-btn:hover {
-        background: rgba(201, 168, 76, 0.2);
-      }
-
-      /* Footer links */
-      .footer {
-        text-align: center;
-        margin-top: 40px;
-        color: var(--text-dim);
-        font-size: 13px;
-        font-style: italic;
-      }
-
-      /* ── Mobile forced-color safeguards ── */
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6 {
-        color: var(--gold-light) !important;
-      }
-      p,
-      span,
-      div,
-      li,
-      label {
-        color: inherit;
-      }
-
-      .nav-pill {
-        color: var(--text) !important;
-        background: rgba(201, 168, 76, 0.05) !important;
-        letter-spacing: 2px;
-      }
-      .nav-pill:hover {
-        color: var(--gold-light) !important;
-        letter-spacing: 2px;
-      }
-      .nav-pill.active {
-        color: #86efac !important;
-        background: rgba(34, 197, 94, 0.12) !important;
-      }
-      .nav-pill.next {
-        color: var(--gold) !important;
-      }
-
-      .mini-btn {
-        color: var(--text) !important;
-        background: rgba(201, 168, 76, 0.05) !important;
-      }
-      .mini-btn:hover {
-        color: var(--gold-light) !important;
-      }
-      .mini-btn.active {
-        color: #86efac !important;
-      }
-
-      .oracion-texto {
-        color: #e8dfc8 !important;
-      }
-      .oracion-titulo {
-        color: var(--gold) !important;
-      }
-      .modal-close {
-        color: var(--text-dim) !important;
-        background: rgba(201, 168, 76, 0.06) !important;
-      }
-      .modal-nav-btn {
-        color: var(--gold-dim) !important;
-        background: rgba(201, 168, 76, 0.07) !important;
-      }
-      .modal-nav-btn:hover:not(:disabled) {
-        color: var(--gold-light) !important;
-      }
-
-      .misterio-num {
-        color: var(--gold-dim) !important;
-      }
-      .misterio-title {
-        color: var(--gold-light) !important;
-      }
-      .misterio-desc {
-        color: var(--text) !important;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        letter-spacing: 2px;
-      }
-      .misterio-fruto {
-        color: var(--gold) !important;
-        margin-top: 3px;
-      }
-      .misterio-toggle {
-        color: var(--gold-dim) !important;
-      }
-
-      .misterio-card {
-        background: #111827 !important;
-      }
-      .misterio-header {
-        background: linear-gradient(
-          135deg,
-          rgba(201, 168, 76, 0.08) 0%,
-          rgba(17, 24, 39, 0) 100%
-        ) !important;
-      }
-      .misterio-content {
-        background: #111827 !important;
-      }
-
-      .oracion-modal {
-        background: #111827 !important;
-      }
-      .oracion-modal-header {
-        background: rgba(201, 168, 76, 0.06) !important;
-      }
-      .oracion-modal-footer {
-        background: rgba(201, 168, 76, 0.03) !important;
-      }
-      .oracion-modal-body {
-        background: #111827 !important;
-      }
-
-      .timer-box {
-        background: #111827 !important;
-      }
-      .timer-title {
-        color: var(--gold-dim) !important;
-      }
-      .timer-display {
-        color: var(--gold-light) !important;
-      }
-      .timer-btn {
-        color: var(--gold) !important;
-        background: rgba(201, 168, 76, 0.1) !important;
-      }
-
-      .misterio-badge {
-        color: var(--gold-light) !important;
-        background: rgba(201, 168, 76, 0.07) !important;
-      }
-      .nav-label {
-        color: var(--gold) !important;
-      }
-      .decena-label {
-        color: var(--gold-light) !important;
-      }
-      .separator span {
-        color: var(--text) !important;
-      }
-      .counter {
-        color: var(--gold-light) !important;
-        background: rgba(201, 168, 76, 0.07) !important;
-      }
-      .counter strong {
-        color: var(--gold) !important;
-      }
-      .cuentas-reset {
-        color: var(--text) !important;
-        background: transparent !important;
-      }
-      .footer {
-        color: var(--text-dim) !important;
       }
 
       input,
@@ -903,37 +734,31 @@
         <span class="misterio-badge" id="misterioBadge"></span>
       </header>
 
-      <!-- Rezadas -->
       <div class="counter">
         Ave Marías rezadas: <strong id="contadorAves">0</strong> / 53
       </div>
 
-      <!-- Intro oraciones -->
       <div class="nav-section">
         <div class="nav-label">Introducción</div>
         <div class="nav-pills" id="introNav"></div>
       </div>
 
       <div class="separator"><span>✦ Misterios ✦</span></div>
-
-      <!-- Misterios -->
       <div id="misteriosContainer"></div>
-
       <div class="separator"><span>✦ Conclusión ✦</span></div>
 
-      <!-- Final oraciones -->
       <div class="nav-section">
         <div class="nav-label">Oraciones Finales</div>
         <div class="nav-pills" id="finalNav"></div>
       </div>
 
       <footer class="footer">
-        <p style="font-family: &quot;Times New Roman&quot;, Times, serif">
+        <p style="font-family: &quot;Times New Roman&quot;, serif">
           Rezad sin cesar. — 1 Tes 5:17
         </p>
         <p
           style="
-            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-family: Verdana, sans-serif;
             font-size: 10px;
             margin-top: 10px;
           "
@@ -1002,9 +827,6 @@
     </div>
 
     <script>
-      /* ============================================================
-   DATOS
-============================================================ */
       const ORACIONES = {
         senal: {
           titulo: "Señal de la Cruz",
@@ -1211,34 +1033,22 @@
         },
       };
 
-      /* ============================================================
-   ESTADO
-============================================================ */
-      let pasos = []; // lista ordenada de {id, titulo, texto}
-      let pasoActual = 0;
-      let avesRezadas = 0;
-      let misterioActivo = detectarMisterio();
+      let pasos = [],
+        pasoActual = 0,
+        avesRezadas = 0;
+      let misterioActivo = [
+        "Gloriosos",
+        "Gozosos",
+        "Dolorosos",
+        "Luminosos",
+        "Dolorosos",
+        "Dolorosos",
+        "Gloriosos",
+      ][new Date().getDay()];
 
-      function detectarMisterio() {
-        const dia = new Date().getDay(); // 0=dom, 1=lun...
-        if (dia === 0) return "Gloriosos";
-        if (dia === 1) return "Gozosos";
-        if (dia === 2) return "Dolorosos";
-        if (dia === 3) return "Luminosos";
-        if (dia === 4) return "Dolorosos";
-        if (dia === 5) return "Dolorosos";
-        if (dia === 6) return "Gloriosos";
-        return "Gloriosos";
-      }
-
-      /* ============================================================
-   COSTRUCCION DE PASOS
-============================================================ */
       function buildPasos() {
         pasos = [];
         const M = MISTERIOS_SET[misterioActivo];
-
-        // Intro
         [
           "senal",
           "credo",
@@ -1247,11 +1057,7 @@
           "padre",
           "tresAves",
           "gloria",
-        ].forEach((k) => {
-          pasos.push({ id: k, ...ORACIONES[k] });
-        });
-
-        // Misterios x5
+        ].forEach((k) => pasos.push({ id: k, ...ORACIONES[k] }));
         M.lista.forEach((m, i) => {
           pasos.push({
             id: `m${i}_padre`,
@@ -1279,29 +1085,28 @@
             texto: ORACIONES.mariaGracia.texto,
           });
         });
-
-        // Final
         ["letanias", "cordero", "oracionFinal", "salve", "jacFinal"].forEach(
-          (k) => {
-            pasos.push({ id: k, ...ORACIONES[k] });
-          },
+          (k) => pasos.push({ id: k, ...ORACIONES[k] }),
         );
       }
 
-      /* ============================================================
-   RENDER
-============================================================ */
       function render() {
         buildPasos();
-
-        // Badge
         const M = MISTERIOS_SET[misterioActivo];
         document.getElementById("misterioBadge").textContent =
           `Misterios ${misterioActivo}  ·  ${M.dias}`;
-
         renderIntroNav();
         renderMisterios();
         renderFinalNav();
+      }
+
+      function makePill(label, idx, extraClass = "") {
+        const btn = document.createElement("button");
+        btn.className = "nav-pill" + (extraClass ? " " + extraClass : "");
+        btn.textContent = label;
+        btn.dataset.idx = idx;
+        btn.onclick = () => mostrarPaso(idx);
+        return btn;
       }
 
       function renderIntroNav() {
@@ -1325,84 +1130,14 @@
         ];
         const cont = document.getElementById("introNav");
         cont.innerHTML = "";
-        keys.forEach((k, i) => {
-          const idx = pasos.findIndex((p) => p.id === k);
-          const btn = document.createElement("button");
-          btn.className = "nav-pill";
-          btn.textContent = labels[i];
-          btn.dataset.idx = idx;
-          btn.onclick = () => mostrarPaso(idx);
-          cont.appendChild(btn);
-        });
-      }
-
-      function renderMisterios() {
-        const cont = document.getElementById("misteriosContainer");
-        cont.innerHTML = "";
-        const M = MISTERIOS_SET[misterioActivo];
-
-        // Selector de misterio
-        const sel = document.createElement("div");
-        sel.className = "nav-section";
-        sel.innerHTML = `<div class="nav-label">Tipo de Misterio</div><div class="nav-pills" id="misterioSel"></div>`;
-        cont.appendChild(sel);
-
-        ["Gloriosos", "Gozosos", "Dolorosos", "Luminosos"].forEach((tipo) => {
-          const btn = document.createElement("button");
-          btn.className =
-            "nav-pill" + (tipo === misterioActivo ? " active" : "");
-          btn.textContent = tipo;
-          btn.onclick = () => {
-            misterioActivo = tipo;
-            render();
-          };
-          document.getElementById("misterioSel")?.appendChild(btn);
-          sel.querySelector("#misterioSel").appendChild(btn);
-        });
-
-        M.lista.forEach((m, i) => {
-          const cuentasId = `cuentas_${misterioActivo}_${i}`;
-          const div = document.createElement("div");
-          div.className = "misterio-section";
-          div.style.animationDelay = i * 0.07 + "s";
-
-          const idxPadre = pasos.findIndex((p) => p.id === `m${i}_padre`);
-          const idxAve = pasos.findIndex((p) => p.id === `m${i}_ave`);
-          const idxGloria = pasos.findIndex((p) => p.id === `m${i}_gloria`);
-          const idxFatima = pasos.findIndex((p) => p.id === `m${i}_fatima`);
-          const idxGracia = pasos.findIndex((p) => p.id === `m${i}_gracia`);
-
-          div.innerHTML = `
-    <div class="misterio-card">
-      <div class="misterio-header" onclick="toggleMisterio(${i})">
-        <div class="misterio-num">${m.num}°</div>
-        <div class="misterio-info">
-          <div class="misterio-title">${m.titulo}</div>
-          <div class="misterio-desc">${m.desc}</div>
-          <div class="misterio-fruto">Fruto: ${m.fruto}</div>
-        </div>
-        <div class="misterio-toggle" id="tog_${i}">▸</div>
-      </div>
-      <div class="misterio-content" id="mc_${i}">
-        <div class="misterio-oraciones">
-          <button class="mini-btn" data-idx="${idxPadre}" onclick="mostrarPaso(${idxPadre})">Padre Nuestro</button>
-          <button class="mini-btn" data-idx="${idxAve}" onclick="mostrarPaso(${idxAve})">Ave María ×10</button>
-          <button class="mini-btn" data-idx="${idxGloria}" onclick="mostrarPaso(${idxGloria})">Gloria</button>
-          <button class="mini-btn" data-idx="${idxFatima}" onclick="mostrarPaso(${idxFatima})">Fátima</button>
-          <button class="mini-btn" data-idx="${idxGracia}" onclick="mostrarPaso(${idxGracia})">Madre de Gracia</button>
-          <button class="mini-btn" onclick="abrirTimer()">⏱ Meditar</button>
-        </div>
-        <div style="margin-top:14px">
-          <div class="decena-label">Avemarías rezadas</div>
-          <div class="cuentas" id="${cuentasId}">
-            ${Array.from({ length: 10 }, (_, j) => `<div class="cuenta" onclick="toggleCuenta(this,'${cuentasId}')"></div>`).join("")}
-          </div>
-          <button class="cuentas-reset" onclick="resetCuentas('${cuentasId}')">limpiar</button>
-        </div>
-      </div>
-    </div>`;
-          cont.appendChild(div);
-        });
+        keys.forEach((k, i) =>
+          cont.appendChild(
+            makePill(
+              labels[i],
+              pasos.findIndex((p) => p.id === k),
+            ),
+          ),
+        );
       }
 
       function renderFinalNav() {
@@ -1422,134 +1157,164 @@
         ];
         const cont = document.getElementById("finalNav");
         cont.innerHTML = "";
-        keys.forEach((k, i) => {
-          const idx = pasos.findIndex((p) => p.id === k);
+        keys.forEach((k, i) =>
+          cont.appendChild(
+            makePill(
+              labels[i],
+              pasos.findIndex((p) => p.id === k),
+            ),
+          ),
+        );
+      }
+
+      function renderMisterios() {
+        const cont = document.getElementById("misteriosContainer");
+        cont.innerHTML = "";
+        const M = MISTERIOS_SET[misterioActivo];
+
+        // Type selector
+        const sel = document.createElement("div");
+        sel.className = "nav-section";
+        sel.innerHTML = `<div class="nav-label">Tipo de Misterio</div><div id="misterioSel"></div>`;
+        cont.appendChild(sel);
+        ["Gloriosos", "Gozosos", "Dolorosos", "Luminosos"].forEach((tipo) => {
           const btn = document.createElement("button");
-          btn.className = "nav-pill";
-          btn.textContent = labels[i];
-          btn.onclick = () => mostrarPaso(idx);
-          cont.appendChild(btn);
+          btn.className =
+            "nav-pill" + (tipo === misterioActivo ? " active" : "");
+          btn.textContent = tipo;
+          btn.onclick = () => {
+            misterioActivo = tipo;
+            render();
+          };
+          sel.querySelector("#misterioSel").appendChild(btn);
+        });
+
+        M.lista.forEach((m, i) => {
+          const cid = `cuentas_${misterioActivo}_${i}`;
+          const ip = pasos.findIndex((p) => p.id === `m${i}_padre`);
+          const ia = pasos.findIndex((p) => p.id === `m${i}_ave`);
+          const ig = pasos.findIndex((p) => p.id === `m${i}_gloria`);
+          const ift = pasos.findIndex((p) => p.id === `m${i}_fatima`);
+          const igr = pasos.findIndex((p) => p.id === `m${i}_gracia`);
+          const div = document.createElement("div");
+          div.className = "misterio-section";
+          div.style.animationDelay = i * 0.07 + "s";
+          div.innerHTML = `
+          <div class="misterio-card">
+            <div class="misterio-header" onclick="toggleMisterio(${i})">
+              <div class="misterio-num">${m.num}°</div>
+              <div class="misterio-info">
+                <div class="misterio-title">${m.titulo}</div>
+                <div class="misterio-desc">${m.desc}</div>
+                <div class="misterio-fruto">Fruto: ${m.fruto}</div>
+              </div>
+              <div class="misterio-toggle" id="tog_${i}">▸</div>
+            </div>
+            <div class="misterio-content" id="mc_${i}">
+              <div class="misterio-oraciones">
+                <button class="mini-btn" data-idx="${ip}"  onclick="mostrarPaso(${ip})">Padre Nuestro</button>
+                <button class="mini-btn" data-idx="${ia}"  onclick="mostrarPaso(${ia})">Ave María ×10</button>
+                <button class="mini-btn" data-idx="${ig}"  onclick="mostrarPaso(${ig})">Gloria</button>
+                <button class="mini-btn" data-idx="${ift}" onclick="mostrarPaso(${ift})">Fátima</button>
+                <button class="mini-btn" data-idx="${igr}" onclick="mostrarPaso(${igr})">Madre de Gracia</button>
+                <button class="mini-btn" onclick="abrirTimer()">⏱ Meditar</button>
+              </div>
+              <div style="margin-top:14px">
+                <div class="decena-label">Avemarías rezadas</div>
+                <div class="cuentas" id="${cid}">
+                  ${Array.from({ length: 10 }, () => `<div class="cuenta" onclick="toggleCuenta(this,'${cid}')"></div>`).join("")}
+                </div>
+                <button class="cuentas-reset" onclick="resetCuentas('${cid}')">limpiar</button>
+              </div>
+            </div>
+          </div>`;
+          cont.appendChild(div);
         });
       }
 
-      /* ============================================================
-   MOSTRAR PASO
-============================================================ */
       function mostrarPaso(idx) {
         if (idx < 0 || idx >= pasos.length) return;
         pasoActual = idx;
-
         const paso = pasos[idx];
         document.getElementById("panelTitulo").textContent = paso.titulo;
         document.getElementById("panelTexto").textContent = paso.texto;
-
-        // Nav buttons state
         document.getElementById("btnAnterior").disabled = idx === 0;
         document.getElementById("btnSiguiente").disabled =
           idx === pasos.length - 1;
-
-        // Progress bar
-        const pct = Math.round((idx / (pasos.length - 1)) * 100);
-        document.getElementById("progressBar").style.width = pct + "%";
-
-        // Update all pills
-        document.querySelectorAll(".nav-pill").forEach((btn) => {
-          const btnIdx = parseInt(btn.dataset.idx);
-          btn.classList.toggle("active", btnIdx === idx);
-          btn.classList.toggle("next", btnIdx === idx + 1);
+        document.getElementById("progressBar").style.width =
+          Math.round((idx / (pasos.length - 1)) * 100) + "%";
+        document.querySelectorAll(".nav-pill").forEach((b) => {
+          const n = parseInt(b.dataset.idx);
+          b.classList.toggle("active", n === idx);
+          b.classList.toggle("next", n === idx + 1);
         });
-
-        document.querySelectorAll(".mini-btn[data-idx]").forEach((btn) => {
-          const btnIdx = parseInt(btn.dataset.idx);
-          btn.classList.toggle("active", btnIdx === idx);
-        });
-
-        // Open modal
+        document
+          .querySelectorAll(".mini-btn[data-idx]")
+          .forEach((b) =>
+            b.classList.toggle("active", parseInt(b.dataset.idx) === idx),
+          );
         document.getElementById("oracionOverlay").classList.add("open");
-        // Re-trigger animation
         const modal = document.getElementById("oracionModal");
         modal.style.animation = "none";
-        modal.offsetHeight; // reflow
+        modal.offsetHeight;
         modal.style.animation = "";
       }
 
       function cerrarOracion() {
         document.getElementById("oracionOverlay").classList.remove("open");
       }
-
       function navegar(dir) {
         mostrarPaso(pasoActual + dir);
       }
 
-      /* ============================================================
-   MISTERIO TOGGLE
-============================================================ */
       function toggleMisterio(i) {
-        const mc = document.getElementById(`mc_${i}`);
-        const tog = document.getElementById(`tog_${i}`);
-        const isOpen = mc.classList.toggle("open");
-        tog.textContent = isOpen ? "▾" : "▸";
+        const mc = document.getElementById(`mc_${i}`),
+          tog = document.getElementById(`tog_${i}`);
+        tog.textContent = mc.classList.toggle("open") ? "▾" : "▸";
       }
 
-      /* ============================================================
-   CUENTAS
-============================================================ */
-      function toggleCuenta(el, groupId) {
+      function toggleCuenta(el, gid) {
         el.classList.toggle("rezada");
         recalcularAves();
       }
-
-      function resetCuentas(groupId) {
+      function resetCuentas(gid) {
         document
-          .querySelectorAll(`#${groupId} .cuenta`)
+          .querySelectorAll(`#${gid} .cuenta`)
           .forEach((c) => c.classList.remove("rezada"));
         recalcularAves();
       }
-
       function recalcularAves() {
         avesRezadas = document.querySelectorAll(".cuenta.rezada").length;
         document.getElementById("contadorAves").textContent = avesRezadas;
       }
 
-      /* ============================================================
-   TIMER
-============================================================ */
-      let timerInterval = null;
-      let timerTotal = 30;
-      let timerLeft = 30;
-
+      let timerInterval = null,
+        timerTotal = 30,
+        timerLeft = 30;
       function abrirTimer() {
         document.getElementById("timerOverlay").classList.add("open");
-        mostrarTimer(30);
+        resetTimer(30);
       }
-
       function cerrarTimer() {
         document.getElementById("timerOverlay").classList.remove("open");
         clearInterval(timerInterval);
       }
-
-      function mostrarTimer(seg) {
+      function resetTimer(seg) {
         clearInterval(timerInterval);
-        timerLeft = seg;
-        timerTotal = seg;
+        timerLeft = timerTotal = seg;
         actualizarTimerUI();
       }
-
       function iniciarTimer(seg) {
-        clearInterval(timerInterval);
-        timerLeft = seg;
-        timerTotal = seg;
-        actualizarTimerUI();
+        resetTimer(seg);
         timerInterval = setInterval(() => {
           timerLeft--;
           actualizarTimerUI();
           if (timerLeft <= 0) {
             clearInterval(timerInterval);
-            // gentle audio cue via AudioContext
             try {
-              const ctx = new AudioContext();
-              const osc = ctx.createOscillator();
-              const gain = ctx.createGain();
+              const ctx = new AudioContext(),
+                osc = ctx.createOscillator(),
+                gain = ctx.createGain();
               osc.connect(gain);
               gain.connect(ctx.destination);
               osc.frequency.value = 432;
@@ -1564,21 +1329,15 @@
           }
         }, 1000);
       }
-
       function actualizarTimerUI() {
-        const m = Math.floor(timerLeft / 60);
-        const s = timerLeft % 60;
+        const m = Math.floor(timerLeft / 60),
+          s = timerLeft % 60;
         document.getElementById("timerDisplay").textContent =
           m + ":" + String(s).padStart(2, "0");
-
-        const circ = 2 * Math.PI * 54;
-        const offset = circ * (1 - timerLeft / timerTotal);
-        document.getElementById("timerRing").style.strokeDashoffset = offset;
+        document.getElementById("timerRing").style.strokeDashoffset =
+          2 * Math.PI * 54 * (1 - timerLeft / timerTotal);
       }
 
-      /* ============================================================
-   INIT
-============================================================ */
       render();
     </script>
   </body>
