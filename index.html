@@ -1,909 +1,1373 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Santo Rosario</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
-
-<style>
-:root {
-  --gold: #c9a84c;
-  --gold-light: #e8cc80;
-  --gold-dim: #8a6f30;
-  --bg-deep: #080b12;
-  --bg-panel: #0d1220;
-  --bg-card: #111827;
-  --text: #e8dfc8;
-  --text-dim: #9a8e78;
-  --active: #22c55e;
-  --next: #e8cc80;
-  --oracion-bg: #0a1018;
-  --border: rgba(201,168,76,0.18);
-}
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-html { scroll-behavior: smooth; }
-
-body {
-  background: var(--bg-deep);
-  color: var(--text);
-  font-family: 'EB Garamond', Georgia, serif;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-/* Background atmosphere */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 60% 50% at 50% 0%, rgba(201,168,76,0.07) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 60% at 80% 80%, rgba(30,50,100,0.2) 0%, transparent 60%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Grain overlay */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-  opacity: 0.5;
-  z-index: 0;
-}
-
-#app {
-  position: relative;
-  z-index: 1;
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 20px 16px 60px;
-}
-
-/* Header */
-.header {
-  text-align: center;
-  padding: 36px 0 28px;
-  animation: fadeDown 0.8s ease both;
-}
-
-.header-icon {
-  font-size: 36px;
-  display: block;
-  margin-bottom: 12px;
-  filter: drop-shadow(0 0 16px rgba(201,168,76,0.5));
-  animation: pulse-glow 4s ease-in-out infinite;
-}
-
-@keyframes pulse-glow {
-  0%, 100% { filter: drop-shadow(0 0 12px rgba(201,168,76,0.4)); }
-  50% { filter: drop-shadow(0 0 24px rgba(201,168,76,0.8)); }
-}
-
-.header h1 {
-  font-family: 'Cinzel', serif;
-  font-size: clamp(22px, 5vw, 32px);
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--gold-light);
-  text-shadow: 0 0 30px rgba(201,168,76,0.3);
-}
-
-.header-divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 14px auto;
-  max-width: 320px;
-}
-
-.header-divider::before,
-.header-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
-}
-
-.header-divider span {
-  color: var(--gold);
-  font-size: 18px;
-}
-
-.misterio-badge {
-  display: inline-block;
-  font-family: 'Cinzel', serif;
-  font-size: 12px;
-  letter-spacing: 0.2em;
-  color: var(--gold-dim);
-  text-transform: uppercase;
-  background: rgba(201,168,76,0.07);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 5px 16px;
-}
-
-/* Progress bar */
-.progress-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--gold-dim), var(--gold-light));
-  transition: width 0.4s ease;
-  z-index: 100;
-  box-shadow: 0 0 8px rgba(201,168,76,0.6);
-}
-
-/* Nav pills */
-.nav-section {
-  margin-bottom: 20px;
-  animation: fadeUp 0.6s ease both;
-  animation-delay: 0.15s;
-}
-
-.nav-label {
-  font-family: 'Cinzel', serif;
-  font-size: 10px;
-  letter-spacing: 0.25em;
-  color: var(--gold-dim);
-  text-transform: uppercase;
-  margin-bottom: 8px;
-  padding-left: 2px;
-}
-
-.nav-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.nav-pill {
-  background: rgba(201,168,76,0.05);
-  color: var(--text-dim);
-  border: 1px solid var(--border);
-  padding: 6px 14px;
-  border-radius: 24px;
-  cursor: pointer;
-  font-family: 'EB Garamond', serif;
-  font-size: 13px;
-  transition: all 0.25s;
-  white-space: nowrap;
-}
-
-.nav-pill:hover {
-  background: rgba(201,168,76,0.12);
-  color: var(--gold-light);
-  border-color: var(--gold-dim);
-}
-
-.nav-pill.active {
-  background: rgba(34,197,94,0.12);
-  color: #86efac;
-  border-color: rgba(34,197,94,0.4);
-}
-
-.nav-pill.next {
-  border-color: rgba(232,204,128,0.45);
-  color: var(--gold);
-}
-
-/* Oración modal */
-.oracion-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(8,11,18,0.88);
-  backdrop-filter: blur(8px);
-  z-index: 200;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-}
-
-.oracion-overlay.open {
-  display: flex;
-  animation: fadeIn 0.2s ease;
-}
-
-.oracion-modal {
-  background: var(--bg-card);
-  border: 1px solid rgba(201,168,76,0.3);
-  border-radius: 16px;
-  width: 100%;
-  max-width: 560px;
-  max-height: 88vh;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 24px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(201,168,76,0.05) inset;
-  animation: modalIn 0.28s cubic-bezier(0.34,1.56,0.64,1) both;
-}
-
-@keyframes modalIn {
-  from { opacity: 0; transform: scale(0.92) translateY(16px); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-.oracion-modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
-  background: rgba(201,168,76,0.06);
-  border-bottom: 1px solid var(--border);
-  border-radius: 16px 16px 0 0;
-  flex-shrink: 0;
-}
-
-.oracion-titulo {
-  font-family: 'Cinzel', serif;
-  font-size: 13px;
-  letter-spacing: 0.1em;
-  color: var(--gold);
-}
-
-.modal-close {
-  background: rgba(201,168,76,0.06);
-  border: 1px solid var(--border);
-  color: var(--text-dim);
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-  flex-shrink: 0;
-}
-
-.modal-close:hover {
-  background: rgba(201,168,76,0.15);
-  color: var(--gold-light);
-  border-color: var(--gold-dim);
-}
-
-.oracion-modal-body {
-  padding: 28px 28px 20px;
-  overflow-y: auto;
-  flex: 1;
-}
-
-.oracion-texto {
-  font-size: clamp(16px, 3.5vw, 20px);
-  line-height: 1.9;
-  color: var(--text);
-  white-space: pre-line;
-  letter-spacing: 0.01em;
-}
-
-.oracion-modal-footer {
-  display: flex;
-  justify-content: space-between;
-  padding: 12px 20px;
-  border-top: 1px solid var(--border);
-  background: rgba(201,168,76,0.03);
-  border-radius: 0 0 16px 16px;
-  flex-shrink: 0;
-}
-
-.modal-nav-btn {
-  background: rgba(201,168,76,0.07);
-  border: 1px solid var(--border);
-  color: var(--gold-dim);
-  padding: 7px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-family: 'Cinzel', serif;
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  transition: all 0.2s;
-}
-
-.modal-nav-btn:hover:not(:disabled) {
-  background: rgba(201,168,76,0.16);
-  color: var(--gold-light);
-  border-color: var(--gold-dim);
-}
-
-.modal-nav-btn:disabled {
-  opacity: 0.25;
-  cursor: not-allowed;
-}
-
-/* Misterio section */
-.misterio-section {
-  margin-bottom: 16px;
-  animation: fadeUp 0.5s ease both;
-}
-
-.misterio-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-}
-
-.misterio-header {
-  padding: 14px 18px;
-  background: linear-gradient(135deg, rgba(201,168,76,0.08) 0%, transparent 100%);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  user-select: none;
-  transition: background 0.2s;
-}
-
-.misterio-header:hover {
-  background: linear-gradient(135deg, rgba(201,168,76,0.14) 0%, transparent 100%);
-}
-
-.misterio-num {
-  font-family: 'Cinzel', serif;
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--gold-dim);
-  min-width: 32px;
-  line-height: 1;
-}
-
-.misterio-info { flex: 1; }
-
-.misterio-title {
-  font-family: 'Cinzel', serif;
-  font-size: 13px;
-  color: var(--gold-light);
-  letter-spacing: 0.05em;
-  margin-bottom: 2px;
-}
-
-.misterio-desc {
-  font-size: 12px;
-  color: var(--text-dim);
-  font-style: italic;
-}
-
-.misterio-fruto {
-  font-size: 11px;
-  color: var(--gold-dim);
-  letter-spacing: 0.08em;
-  font-family: 'Cinzel', serif;
-}
-
-.misterio-toggle {
-  color: var(--gold-dim);
-  font-size: 14px;
-  transition: transform 0.3s;
-}
-
-.misterio-content {
-  padding: 16px 18px;
-  display: none;
-}
-
-.misterio-content.open {
-  display: block;
-  animation: fadeIn 0.3s ease;
-}
-
-/* Decena (rosario beads) */
-.decena-label {
-  font-family: 'Cinzel', serif;
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  color: var(--gold-dim);
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-.cuentas {
-  display: flex;
-  gap: 7px;
-  flex-wrap: wrap;
-  margin: 10px 0 16px;
-}
-
-.cuenta {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: rgba(71,85,105,0.6);
-  border: 1px solid rgba(201,168,76,0.15);
-  cursor: pointer;
-  transition: all 0.2s;
-  position: relative;
-}
-
-.cuenta:hover {
-  transform: scale(1.15);
-  border-color: var(--gold-dim);
-}
-
-.cuenta.rezada {
-  background: radial-gradient(circle at 35% 35%, var(--gold-light), var(--gold-dim));
-  border-color: var(--gold);
-  box-shadow: 0 0 8px rgba(201,168,76,0.4);
-}
-
-.cuentas-reset {
-  font-size: 11px;
-  color: var(--text-dim);
-  cursor: pointer;
-  font-family: 'Cinzel', serif;
-  letter-spacing: 0.1em;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  opacity: 0.6;
-  transition: opacity 0.2s;
-  background: none;
-  border: none;
-  display: inline;
-  padding: 0;
-  margin: 0;
-}
-
-.cuentas-reset:hover { opacity: 1; }
-
-/* Mini oracion buttons inside misterio */
-.misterio-oraciones {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin-top: 6px;
-}
-
-.mini-btn {
-  background: rgba(201,168,76,0.05);
-  border: 1px solid var(--border);
-  color: var(--text-dim);
-  padding: 5px 12px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-family: 'EB Garamond', serif;
-  font-size: 12px;
-  transition: all 0.2s;
-}
-
-.mini-btn:hover {
-  background: rgba(201,168,76,0.12);
-  color: var(--gold-light);
-  border-color: var(--gold-dim);
-}
-
-.mini-btn.active {
-  background: rgba(34,197,94,0.1);
-  color: #86efac;
-  border-color: rgba(34,197,94,0.35);
-}
-
-/* Separator */
-.separator {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 24px 0;
-}
-
-.separator::before,
-.separator::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--border), transparent);
-}
-
-.separator span {
-  font-family: 'Cinzel', serif;
-  font-size: 10px;
-  letter-spacing: 0.25em;
-  color: var(--gold-dim);
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-/* Counter badge */
-.counter {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(201,168,76,0.07);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 4px 12px;
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  color: var(--gold-dim);
-  letter-spacing: 0.1em;
-  margin-bottom: 16px;
-}
-
-.counter strong {
-  color: var(--gold);
-}
-
-/* Animations */
-@keyframes fadeDown {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* Timer modal */
-.timer-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(8,11,18,0.85);
-  backdrop-filter: blur(6px);
-  z-index: 200;
-  align-items: center;
-  justify-content: center;
-}
-
-.timer-overlay.open {
-  display: flex;
-  animation: fadeIn 0.25s ease;
-}
-
-.timer-box {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 32px;
-  text-align: center;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-  min-width: 260px;
-}
-
-.timer-title {
-  font-family: 'Cinzel', serif;
-  font-size: 13px;
-  color: var(--gold-dim);
-  letter-spacing: 0.15em;
-  margin-bottom: 6px;
-}
-
-.timer-display {
-  font-family: 'Cinzel', serif;
-  font-size: 52px;
-  color: var(--gold-light);
-  margin: 10px 0;
-  text-shadow: 0 0 20px rgba(201,168,76,0.4);
-}
-
-.timer-circle {
-  width: 120px;
-  height: 120px;
-  margin: 0 auto 16px;
-}
-
-.timer-circle svg {
-  transform: rotate(-90deg);
-}
-
-.timer-ring-bg {
-  fill: none;
-  stroke: rgba(201,168,76,0.1);
-  stroke-width: 4;
-}
-
-.timer-ring-fill {
-  fill: none;
-  stroke: var(--gold);
-  stroke-width: 4;
-  stroke-linecap: round;
-  stroke-dasharray: 339;
-  stroke-dashoffset: 0;
-  transition: stroke-dashoffset 1s linear;
-  filter: drop-shadow(0 0 4px rgba(201,168,76,0.6));
-}
-
-.timer-btn {
-  background: rgba(201,168,76,0.1);
-  border: 1px solid var(--border);
-  color: var(--gold);
-  padding: 8px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-family: 'Cinzel', serif;
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  transition: all 0.2s;
-  margin: 4px;
-}
-
-.timer-btn:hover {
-  background: rgba(201,168,76,0.2);
-}
-
-/* Footer links */
-.footer {
-  text-align: center;
-  margin-top: 40px;
-  color: var(--text-dim);
-  font-size: 13px;
-  font-style: italic;
-}
-</style>
-</head>
-<body>
-
-<div class="progress-bar" id="progressBar" style="width:0%"></div>
-
-<div id="app">
-
-  <header class="header">
-    <span class="header-icon">📿</span>
-    <h1>Santo Rosario</h1>
-    <div class="header-divider"><span>✦</span></div>
-    <span class="misterio-badge" id="misterioBadge"></span>
-  </header>
-
-  <!-- Rezadas -->
-  <div class="counter">
-    Ave Marías rezadas: <strong id="contadorAves">0</strong> / 53
-  </div>
-
-  <!-- Intro oraciones -->
-  <div class="nav-section">
-    <div class="nav-label">Introducción</div>
-    <div class="nav-pills" id="introNav"></div>
-  </div>
-
-  <div class="separator"><span>✦ Misterios ✦</span></div>
-
-  <!-- Misterios -->
-  <div id="misteriosContainer"></div>
-
-  <div class="separator"><span>✦ Conclusión ✦</span></div>
-
-  <!-- Final oraciones -->
-  <div class="nav-section">
-    <div class="nav-label">Oraciones Finales</div>
-    <div class="nav-pills" id="finalNav"></div>
-  </div>
-
-  <footer class="footer">
-    <p style="font-family: 'Times New Roman', Times, serif;">Rezad sin cesar. — 1 Tes 5:17</p>
-    <p style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 10px; margin-top: 10px;">by Victor Diaz</p>
-  </footer>
-
-</div>
-
-<!-- Oración modal -->
-<div class="oracion-overlay" id="oracionOverlay" onclick="if(event.target===this) cerrarOracion()">
-  <div class="oracion-modal" id="oracionModal">
-    <div class="oracion-modal-header">
-      <span class="oracion-titulo" id="panelTitulo">–</span>
-      <button class="modal-close" onclick="cerrarOracion()" title="Cerrar">✕</button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#080b12" />
+    <meta name="color-scheme" content="dark" />
+    <title>Santo Rosario</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --gold: #c9a84c;
+        --gold-light: #e8cc80;
+        --gold-dim: #8a6f30;
+        --bg-deep: #080b12;
+        --bg-panel: #0d1220;
+        --bg-card: #111827;
+        --text: #e8dfc8;
+        --text-dim: #9a8e78;
+        --active: #22c55e;
+        --next: #e8cc80;
+        --oracion-bg: #0a1018;
+        --border: rgba(201, 168, 76, 0.18);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* Force colors — prevent iOS/Android from overriding */
+      *,
+      *::before,
+      *::after {
+        -webkit-text-fill-color: unset;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        color-scheme: dark;
+        background-color: #080b12;
+      }
+
+      body {
+        background: #080b12 !important;
+        background-color: #080b12 !important;
+        color: #e8dfc8 !important;
+        font-family: "EB Garamond", Georgia, serif;
+        min-height: 100vh;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Background atmosphere */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background:
+          radial-gradient(
+            ellipse 60% 50% at 50% 0%,
+            rgba(201, 168, 76, 0.07) 0%,
+            transparent 70%
+          ),
+          radial-gradient(
+            ellipse 40% 60% at 80% 80%,
+            rgba(30, 50, 100, 0.2) 0%,
+            transparent 60%
+          );
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* Grain overlay */
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+        pointer-events: none;
+        opacity: 0.5;
+        z-index: 0;
+      }
+
+      #app {
+        position: relative;
+        z-index: 1;
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 20px 16px 60px;
+      }
+
+      /* Header */
+      .header {
+        text-align: center;
+        padding: 36px 0 28px;
+        animation: fadeDown 0.8s ease both;
+      }
+
+      .header-icon {
+        font-size: 36px;
+        display: block;
+        margin-bottom: 12px;
+        filter: drop-shadow(0 0 16px rgba(201, 168, 76, 0.5));
+        animation: pulse-glow 4s ease-in-out infinite;
+      }
+
+      @keyframes pulse-glow {
+        0%,
+        100% {
+          filter: drop-shadow(0 0 12px rgba(201, 168, 76, 0.4));
+        }
+        50% {
+          filter: drop-shadow(0 0 24px rgba(201, 168, 76, 0.8));
+        }
+      }
+
+      .header h1 {
+        font-family: "Cinzel", serif;
+        font-size: clamp(22px, 5vw, 32px);
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        color: var(--gold-light);
+        text-shadow: 0 0 30px rgba(201, 168, 76, 0.3);
+      }
+
+      .header-divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 14px auto;
+        max-width: 320px;
+      }
+
+      .header-divider::before,
+      .header-divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--gold-dim),
+          transparent
+        );
+      }
+
+      .header-divider span {
+        color: var(--gold);
+        font-size: 18px;
+      }
+
+      .misterio-badge {
+        display: inline-block;
+        font-family: "Cinzel", serif;
+        font-size: 12px;
+        letter-spacing: 0.2em;
+        color: var(--gold-dim);
+        text-transform: uppercase;
+        background: rgba(201, 168, 76, 0.07);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 5px 16px;
+      }
+
+      /* Progress bar */
+      .progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--gold-dim), var(--gold-light));
+        transition: width 0.4s ease;
+        z-index: 100;
+        box-shadow: 0 0 8px rgba(201, 168, 76, 0.6);
+      }
+
+      /* Nav pills */
+      .nav-section {
+        margin-bottom: 20px;
+        animation: fadeUp 0.6s ease both;
+        animation-delay: 0.15s;
+      }
+
+      .nav-label {
+        font-family: "Cinzel", serif;
+        font-size: 10px;
+        letter-spacing: 0.25em;
+        color: var(--gold-dim);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        padding-left: 2px;
+      }
+
+      .nav-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .nav-pill {
+        background: rgba(201, 168, 76, 0.05);
+        color: var(--text-dim);
+        border: 1px solid var(--border);
+        padding: 6px 14px;
+        border-radius: 24px;
+        cursor: pointer;
+        font-family: "EB Garamond", serif;
+        font-size: 13px;
+        transition: all 0.25s;
+        white-space: nowrap;
+      }
+
+      .nav-pill:hover {
+        background: rgba(201, 168, 76, 0.12);
+        color: var(--gold-light);
+        border-color: var(--gold-dim);
+      }
+
+      .nav-pill.active {
+        background: rgba(34, 197, 94, 0.12);
+        color: #86efac;
+        border-color: rgba(34, 197, 94, 0.4);
+      }
+
+      .nav-pill.next {
+        border-color: rgba(232, 204, 128, 0.45);
+        color: var(--gold);
+      }
+
+      /* Oración modal */
+      .oracion-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(8, 11, 18, 0.88);
+        backdrop-filter: blur(8px);
+        z-index: 200;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+      }
+
+      .oracion-overlay.open {
+        display: flex;
+        animation: fadeIn 0.2s ease;
+      }
+
+      .oracion-modal {
+        background: var(--bg-card);
+        border: 1px solid rgba(201, 168, 76, 0.3);
+        border-radius: 16px;
+        width: 100%;
+        max-width: 560px;
+        max-height: 88vh;
+        display: flex;
+        flex-direction: column;
+        box-shadow:
+          0 24px 80px rgba(0, 0, 0, 0.7),
+          0 0 0 1px rgba(201, 168, 76, 0.05) inset;
+        animation: modalIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      }
+
+      @keyframes modalIn {
+        from {
+          opacity: 0;
+          transform: scale(0.92) translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      .oracion-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        background: rgba(201, 168, 76, 0.06);
+        border-bottom: 1px solid var(--border);
+        border-radius: 16px 16px 0 0;
+        flex-shrink: 0;
+      }
+
+      .oracion-titulo {
+        font-family: "Cinzel", serif;
+        font-size: 13px;
+        letter-spacing: 0.1em;
+        color: var(--gold);
+      }
+
+      .modal-close {
+        background: rgba(201, 168, 76, 0.06);
+        border: 1px solid var(--border);
+        color: var(--text-dim);
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        flex-shrink: 0;
+      }
+
+      .modal-close:hover {
+        background: rgba(201, 168, 76, 0.15);
+        color: var(--gold-light);
+        border-color: var(--gold-dim);
+      }
+
+      .oracion-modal-body {
+        padding: 28px 28px 20px;
+        overflow-y: auto;
+        flex: 1;
+      }
+
+      .oracion-texto {
+        font-size: clamp(16px, 3.5vw, 20px);
+        line-height: 1.9;
+        color: var(--text);
+        white-space: pre-line;
+        letter-spacing: 0.01em;
+      }
+
+      .oracion-modal-footer {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 20px;
+        border-top: 1px solid var(--border);
+        background: rgba(201, 168, 76, 0.03);
+        border-radius: 0 0 16px 16px;
+        flex-shrink: 0;
+      }
+
+      .modal-nav-btn {
+        background: rgba(201, 168, 76, 0.07);
+        border: 1px solid var(--border);
+        color: var(--gold-dim);
+        padding: 7px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: "Cinzel", serif;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        transition: all 0.2s;
+      }
+
+      .modal-nav-btn:hover:not(:disabled) {
+        background: rgba(201, 168, 76, 0.16);
+        color: var(--gold-light);
+        border-color: var(--gold-dim);
+      }
+
+      .modal-nav-btn:disabled {
+        opacity: 0.25;
+        cursor: not-allowed;
+      }
+
+      /* Misterio section */
+      .misterio-section {
+        margin-bottom: 16px;
+        animation: fadeUp 0.5s ease both;
+      }
+
+      .misterio-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .misterio-header {
+        padding: 14px 18px;
+        background: linear-gradient(
+          135deg,
+          rgba(201, 168, 76, 0.08) 0%,
+          transparent 100%
+        );
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.2s;
+      }
+
+      .misterio-header:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(201, 168, 76, 0.14) 0%,
+          transparent 100%
+        );
+      }
+
+      .misterio-num {
+        font-family: "Cinzel", serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--gold-dim);
+        min-width: 32px;
+        line-height: 1;
+      }
+
+      .misterio-info {
+        flex: 1;
+      }
+
+      .misterio-title {
+        font-family: "Cinzel", serif;
+        font-size: 13px;
+        color: var(--gold-light);
+        letter-spacing: 0.05em;
+        margin-bottom: 2px;
+      }
+
+      .misterio-desc {
+        font-size: 12px;
+        color: var(--text-dim);
+        font-style: italic;
+      }
+
+      .misterio-fruto {
+        font-size: 11px;
+        color: var(--gold-dim);
+        letter-spacing: 0.08em;
+        font-family: "Cinzel", serif;
+      }
+
+      .misterio-toggle {
+        color: var(--gold-dim);
+        font-size: 14px;
+        transition: transform 0.3s;
+      }
+
+      .misterio-content {
+        padding: 16px 18px;
+        display: none;
+      }
+
+      .misterio-content.open {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
+
+      /* Decena (rosario beads) */
+      .decena-label {
+        font-family: "Cinzel", serif;
+        font-size: 10px;
+        letter-spacing: 0.2em;
+        color: var(--gold-dim);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+
+      .cuentas {
+        display: flex;
+        gap: 7px;
+        flex-wrap: wrap;
+        margin: 10px 0 16px;
+      }
+
+      .cuenta {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: rgba(71, 85, 105, 0.6);
+        border: 1px solid rgba(201, 168, 76, 0.15);
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+      }
+
+      .cuenta:hover {
+        transform: scale(1.15);
+        border-color: var(--gold-dim);
+      }
+
+      .cuenta.rezada {
+        background: radial-gradient(
+          circle at 35% 35%,
+          var(--gold-light),
+          var(--gold-dim)
+        );
+        border-color: var(--gold);
+        box-shadow: 0 0 8px rgba(201, 168, 76, 0.4);
+      }
+
+      .cuentas-reset {
+        font-size: 11px;
+        color: var(--text-dim);
+        cursor: pointer;
+        font-family: "Cinzel", serif;
+        letter-spacing: 0.1em;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        opacity: 0.6;
+        transition: opacity 0.2s;
+        background: none;
+        border: none;
+        display: inline;
+        padding: 0;
+        margin: 0;
+      }
+
+      .cuentas-reset:hover {
+        opacity: 1;
+      }
+
+      /* Mini oracion buttons inside misterio */
+      .misterio-oraciones {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 6px;
+      }
+
+      .mini-btn {
+        background: rgba(201, 168, 76, 0.05);
+        border: 1px solid var(--border);
+        color: var(--text-dim);
+        padding: 5px 12px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-family: "EB Garamond", serif;
+        font-size: 12px;
+        transition: all 0.2s;
+      }
+
+      .mini-btn:hover {
+        background: rgba(201, 168, 76, 0.12);
+        color: var(--gold-light);
+        border-color: var(--gold-dim);
+      }
+
+      .mini-btn.active {
+        background: rgba(34, 197, 94, 0.1);
+        color: #86efac;
+        border-color: rgba(34, 197, 94, 0.35);
+      }
+
+      /* Separator */
+      .separator {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 24px 0;
+      }
+
+      .separator::before,
+      .separator::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--border),
+          transparent
+        );
+      }
+
+      .separator span {
+        font-family: "Cinzel", serif;
+        font-size: 10px;
+        letter-spacing: 0.25em;
+        color: var(--gold-dim);
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      /* Counter badge */
+      .counter {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(201, 168, 76, 0.07);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-family: "Cinzel", serif;
+        font-size: 11px;
+        color: var(--gold-dim);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+      }
+
+      .counter strong {
+        color: var(--gold);
+      }
+
+      /* Animations */
+      @keyframes fadeDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* Timer modal */
+      .timer-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(8, 11, 18, 0.85);
+        backdrop-filter: blur(6px);
+        z-index: 200;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .timer-overlay.open {
+        display: flex;
+        animation: fadeIn 0.25s ease;
+      }
+
+      .timer-box {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 32px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        min-width: 260px;
+      }
+
+      .timer-title {
+        font-family: "Cinzel", serif;
+        font-size: 13px;
+        color: var(--gold-dim);
+        letter-spacing: 0.15em;
+        margin-bottom: 6px;
+      }
+
+      .timer-display {
+        font-family: "Cinzel", serif;
+        font-size: 52px;
+        color: var(--gold-light);
+        margin: 10px 0;
+        text-shadow: 0 0 20px rgba(201, 168, 76, 0.4);
+      }
+
+      .timer-circle {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 16px;
+      }
+
+      .timer-circle svg {
+        transform: rotate(-90deg);
+      }
+
+      .timer-ring-bg {
+        fill: none;
+        stroke: rgba(201, 168, 76, 0.1);
+        stroke-width: 4;
+      }
+
+      .timer-ring-fill {
+        fill: none;
+        stroke: var(--gold);
+        stroke-width: 4;
+        stroke-linecap: round;
+        stroke-dasharray: 339;
+        stroke-dashoffset: 0;
+        transition: stroke-dashoffset 1s linear;
+        filter: drop-shadow(0 0 4px rgba(201, 168, 76, 0.6));
+      }
+
+      .timer-btn {
+        background: rgba(201, 168, 76, 0.1);
+        border: 1px solid var(--border);
+        color: var(--gold);
+        padding: 8px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: "Cinzel", serif;
+        font-size: 12px;
+        letter-spacing: 0.1em;
+        transition: all 0.2s;
+        margin: 4px;
+      }
+
+      .timer-btn:hover {
+        background: rgba(201, 168, 76, 0.2);
+      }
+
+      /* Footer links */
+      .footer {
+        text-align: center;
+        margin-top: 40px;
+        color: var(--text-dim);
+        font-size: 13px;
+        font-style: italic;
+      }
+
+      /* ── Mobile forced-color safeguards ── */
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        color: var(--gold-light) !important;
+      }
+      p,
+      span,
+      div,
+      li,
+      label {
+        color: inherit;
+      }
+
+      .nav-pill {
+        color: var(--text) !important;
+        background: rgba(201, 168, 76, 0.05) !important;
+      }
+      .nav-pill:hover {
+        color: var(--gold-light) !important;
+      }
+      .nav-pill.active {
+        color: #86efac !important;
+        background: rgba(34, 197, 94, 0.12) !important;
+      }
+      .nav-pill.next {
+        color: var(--gold) !important;
+      }
+
+      .mini-btn {
+        color: var(--text-dim) !important;
+        background: rgba(201, 168, 76, 0.05) !important;
+      }
+      .mini-btn:hover {
+        color: var(--gold-light) !important;
+      }
+      .mini-btn.active {
+        color: #86efac !important;
+      }
+
+      .oracion-texto {
+        color: #e8dfc8 !important;
+      }
+      .oracion-titulo {
+        color: var(--gold) !important;
+      }
+      .modal-close {
+        color: var(--text-dim) !important;
+        background: rgba(201, 168, 76, 0.06) !important;
+      }
+      .modal-nav-btn {
+        color: var(--gold-dim) !important;
+        background: rgba(201, 168, 76, 0.07) !important;
+      }
+      .modal-nav-btn:hover:not(:disabled) {
+        color: var(--gold-light) !important;
+      }
+
+      .misterio-num {
+        color: var(--gold-dim) !important;
+      }
+      .misterio-title {
+        color: var(--gold-light) !important;
+      }
+      .misterio-desc {
+        color: var(--text) !important;
+      }
+      .misterio-fruto {
+        color: var(--gold-dim) !important;
+      }
+      .misterio-toggle {
+        color: var(--gold-dim) !important;
+      }
+
+      .misterio-card {
+        background: #111827 !important;
+      }
+      .misterio-header {
+        background: linear-gradient(
+          135deg,
+          rgba(201, 168, 76, 0.08) 0%,
+          rgba(17, 24, 39, 0) 100%
+        ) !important;
+      }
+      .misterio-content {
+        background: #111827 !important;
+      }
+
+      .oracion-modal {
+        background: #111827 !important;
+      }
+      .oracion-modal-header {
+        background: rgba(201, 168, 76, 0.06) !important;
+      }
+      .oracion-modal-footer {
+        background: rgba(201, 168, 76, 0.03) !important;
+      }
+      .oracion-modal-body {
+        background: #111827 !important;
+      }
+
+      .timer-box {
+        background: #111827 !important;
+      }
+      .timer-title {
+        color: var(--gold-dim) !important;
+      }
+      .timer-display {
+        color: var(--gold-light) !important;
+      }
+      .timer-btn {
+        color: var(--gold) !important;
+        background: rgba(201, 168, 76, 0.1) !important;
+      }
+
+      .misterio-badge {
+        color: var(--gold-light) !important;
+        background: rgba(201, 168, 76, 0.07) !important;
+      }
+      .nav-label {
+        color: var(--gold-light) !important;
+      }
+      .decena-label {
+        color: var(--gold-light) !important;
+      }
+      .separator span {
+        color: var(--gold-dim) !important;
+      }
+      .counter {
+        color: var(--gold-light) !important;
+        background: rgba(201, 168, 76, 0.07) !important;
+      }
+      .counter strong {
+        color: var(--gold) !important;
+      }
+      .cuentas-reset {
+        color: var(--text-dim) !important;
+        background: transparent !important;
+      }
+      .footer {
+        color: var(--text-dim) !important;
+      }
+
+      input,
+      button,
+      select,
+      textarea {
+        font-family: inherit;
+        -webkit-appearance: none;
+        appearance: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+
+    <div id="app">
+      <header class="header">
+        <span class="header-icon">📿</span>
+        <h1>Santo Rosario</h1>
+        <div class="header-divider"><span>✦</span></div>
+        <span class="misterio-badge" id="misterioBadge"></span>
+      </header>
+
+      <!-- Rezadas -->
+      <div class="counter">
+        Ave Marías rezadas: <strong id="contadorAves">0</strong> / 53
+      </div>
+
+      <!-- Intro oraciones -->
+      <div class="nav-section">
+        <div class="nav-label">Introducción</div>
+        <div class="nav-pills" id="introNav"></div>
+      </div>
+
+      <div class="separator"><span>✦ Misterios ✦</span></div>
+
+      <!-- Misterios -->
+      <div id="misteriosContainer"></div>
+
+      <div class="separator"><span>✦ Conclusión ✦</span></div>
+
+      <!-- Final oraciones -->
+      <div class="nav-section">
+        <div class="nav-label">Oraciones Finales</div>
+        <div class="nav-pills" id="finalNav"></div>
+      </div>
+
+      <footer class="footer">
+        <p style="font-family: &quot;Times New Roman&quot;, Times, serif">
+          Rezad sin cesar. — 1 Tes 5:17
+        </p>
+        <p
+          style="
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-size: 10px;
+            margin-top: 10px;
+          "
+        >
+          by Victor Diaz
+        </p>
+      </footer>
     </div>
-    <div class="oracion-modal-body">
-      <div class="oracion-texto" id="panelTexto"></div>
-    </div>
-    <div class="oracion-modal-footer">
-      <button id="btnAnterior" class="modal-nav-btn" onclick="navegar(-1)">‹ Anterior</button>
-      <button id="btnSiguiente" class="modal-nav-btn" onclick="navegar(1)">Siguiente ›</button>
-    </div>
-  </div>
-</div>
 
-<!-- Timer modal -->
-<div class="timer-overlay" id="timerOverlay" onclick="if(event.target===this) cerrarTimer()">
-  <div class="timer-box">
-    <div class="timer-title">MEDITACIÓN</div>
-    <div class="timer-circle">
-      <svg viewBox="0 0 120 120" width="120" height="120">
-        <circle class="timer-ring-bg" cx="60" cy="60" r="54"/>
-        <circle class="timer-ring-fill" id="timerRing" cx="60" cy="60" r="54"/>
-      </svg>
+    <!-- Oración modal -->
+    <div
+      class="oracion-overlay"
+      id="oracionOverlay"
+      onclick="if (event.target === this) cerrarOracion();"
+    >
+      <div class="oracion-modal" id="oracionModal">
+        <div class="oracion-modal-header">
+          <span class="oracion-titulo" id="panelTitulo">–</span>
+          <button class="modal-close" onclick="cerrarOracion()" title="Cerrar">
+            ✕
+          </button>
+        </div>
+        <div class="oracion-modal-body">
+          <div class="oracion-texto" id="panelTexto"></div>
+        </div>
+        <div class="oracion-modal-footer">
+          <button id="btnAnterior" class="modal-nav-btn" onclick="navegar(-1)">
+            ‹ Anterior
+          </button>
+          <button id="btnSiguiente" class="modal-nav-btn" onclick="navegar(1)">
+            Siguiente ›
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="timer-display" id="timerDisplay">0:30</div>
-    <div>
-      <button class="timer-btn" onclick="iniciarTimer(30)">30s</button>
-      <button class="timer-btn" onclick="iniciarTimer(60)">1 min</button>
-      <button class="timer-btn" onclick="iniciarTimer(120)">2 min</button>
+
+    <!-- Timer modal -->
+    <div
+      class="timer-overlay"
+      id="timerOverlay"
+      onclick="if (event.target === this) cerrarTimer();"
+    >
+      <div class="timer-box">
+        <div class="timer-title">MEDITACIÓN</div>
+        <div class="timer-circle">
+          <svg viewBox="0 0 120 120" width="120" height="120">
+            <circle class="timer-ring-bg" cx="60" cy="60" r="54" />
+            <circle
+              class="timer-ring-fill"
+              id="timerRing"
+              cx="60"
+              cy="60"
+              r="54"
+            />
+          </svg>
+        </div>
+        <div class="timer-display" id="timerDisplay">0:30</div>
+        <div>
+          <button class="timer-btn" onclick="iniciarTimer(30)">30s</button>
+          <button class="timer-btn" onclick="iniciarTimer(60)">1 min</button>
+          <button class="timer-btn" onclick="iniciarTimer(120)">2 min</button>
+        </div>
+        <br />
+        <button class="timer-btn" onclick="cerrarTimer()">Cerrar</button>
+      </div>
     </div>
-    <br>
-    <button class="timer-btn" onclick="cerrarTimer()">Cerrar</button>
-  </div>
-</div>
 
-<script>
-
-/* ============================================================
+    <script>
+      /* ============================================================
    DATOS
 ============================================================ */
-const ORACIONES = {
-  senal: {titulo: "Señal de la Cruz", texto: `Por la señal de la Santa Cruz,\nde nuestros enemigos,\nlíbranos Señor Dios nuestro.\n\nEn el nombre del Padre,\ny del Hijo,\ny del Espíritu Santo.\nAmén.`},
-  credo: {titulo: "Credo Apostólico", texto: `Creo en Dios Padre Todopoderoso,\nCreador del cielo y de la tierra.\n\nCreo en Jesucristo, su único Hijo, Nuestro Señor,\nque fue concebido por obra y gracia del Espíritu Santo,\nnació de Santa María Virgen,\npadeció bajo el poder de Poncio Pilato,\nfue crucificado, muerto y sepultado,\ndescendió a los infiernos,\nal tercer día resucitó de entre los muertos,\nsubió a los cielos\ny está sentado a la derecha de Dios Padre Todopoderoso.\nDesde allí ha de venir a juzgar a vivos y muertos.\n\nCreo en el Espíritu Santo,\nla Santa Iglesia Católica,\nla comunión de los santos,\nel perdón de los pecados,\nla resurrección de la carne\ny la vida eterna.\nAmén.`},
-  abreLabios: {titulo: "Jaculatoria Inicial", texto: `Abre Señor mis labios,\npara alabar tu nombre\ny el de Tu Santa Madre.`},
-  contricion: {titulo: "Acto de Contrición", texto: `Señor mío Jesucristo,\nDios y Hombre verdadero,\nCreador, Padre y Redentor mío;\npor ser Tú quien eres, Bondad infinita,\ny porque te amo sobre todas las cosas,\nme pesa de todo corazón haberte ofendido.\nTambién me pesa porque puedes castigarme con las penas del infierno.\nAyudado de tu divina gracia,\npropongo firmemente nunca más pecar,\nconfesarme y cumplir la penitencia que me fuere impuesta.\nAmén.`},
-  padre: {titulo: "Padre Nuestro", texto: `Padre nuestro, que estás en el cielo,\nsantificado sea tu Nombre;\nvenga a nosotros tu reino;\nhágase tu voluntad en la tierra como en el cielo.\n\nDanos hoy nuestro pan de cada día;\nperdona nuestras ofensas\ncomo también nosotros perdonamos a los que nos ofenden;\nno nos dejes caer en la tentación\ny líbranos del mal.\nAmén.`},
-  ave: {titulo: "Ave María", texto: `Dios te salve, María,\nllena eres de gracia;\nel Señor es contigo;\nbendita Tú eres entre todas las mujeres,\ny bendito es el fruto de tu vientre, Jesús.\n\nSanta María, Madre de Dios,\nruega por nosotros, pecadores,\nahora y en la hora de nuestra muerte.\nAmén.`},
-  tresAves: {titulo: "Tres Ave Marías", texto: `Dios te salve, María,\nllena eres de gracia;\nel Señor es contigo;\nbendita Tú eres entre todas las mujeres,\ny bendito es el fruto de tu vientre, Jesús.\n\nSanta María, Madre de Dios,\nruega por nosotros, pecadores,\nahora y en la hora de nuestra muerte.\nAmén.\n\n✦ ✦ ✦\n(Rezar tres veces)`},
-  gloria: {titulo: "Gloria", texto: `Gloria al Padre y al Hijo\ny al Espíritu Santo.\nComo era en el principio,\nahora y siempre,\npor los siglos de los siglos.\nAmén.`},
-  fatima: {titulo: "Jaculatoria de Fátima", texto: `Oh Jesús mío,\nperdona nuestros pecados,\nlíbranos del fuego del infierno,\nlleva al cielo a todas las almas,\nespecialmente a las más necesitadas\nde tu infinita misericordia.\nAmén.`},
-  mariaGracia: {titulo: "María, Madre de Gracia", texto: `María, Madre de gracia,\nMadre de misericordia.\nDefiéndenos de nuestros enemigos\ny ampáranos ahora y en la hora de nuestra muerte.\nAmén.`},
-  letanias: {titulo: "Letanías Lauretanas", texto: `Santa María, ruega por nosotros.\nSanta Madre de Dios, ruega por nosotros.\nSanta Virgen de las vírgenes, ruega por nosotros.\nMadre de Cristo, ruega por nosotros.\nMadre de la Iglesia, ruega por nosotros.\nMadre de Misericordia, ruega por nosotros.\nReina del Santo Rosario, ruega por nosotros.\nReina de la paz, ruega por nosotros.`},
-  cordero: {titulo: "Cordero de Dios", texto: `Cordero de Dios, que quitas el pecado del mundo.\nPerdónanos, Señor.\n\nCordero de Dios, que quitas el pecado del mundo.\nEscúchanos, Señor.\n\nCordero de Dios, que quitas el pecado del mundo.\nTen piedad de nosotros.\n\nRuega por nosotros, Santa Madre de Dios.\nPara que seamos dignos de alcanzar\nlas promesas de Nuestro Señor Jesucristo.\nAmén.`},
-  oracionFinal: {titulo: "Oración Final", texto: `Te pedimos, Señor,\nnos concedas a nosotros tus siervos,\ngozar de perpetua salud de alma y cuerpo,\ny por la gloriosa intercesión\nde la bienaventurada siempre Virgen María,\nseamos librados de las tristezas presentes\ny gocemos de la eterna alegría.\nPor Jesucristo, nuestro Señor.\nAmén.`},
-  salve: {titulo: "Salve Regina", texto: `Dios te salve, Reina y Madre de misericordia,\nvida, dulzura y esperanza nuestra; Dios te salve.\n\nA Ti llamamos los desterrados hijos de Eva;\na Ti suspiramos, gimiendo y llorando,\nen este valle de lágrimas.\n\nEa, pues, Señora, abogada nuestra,\nvuelve a nosotros esos tus ojos misericordiosos;\ny después de este destierro muéstranos a Jesús,\nfruto bendito de tu vientre.\n\n¡Oh clementísima, oh piadosa,\noh dulce Virgen María!\n\nRuega por nosotros, Santa Madre de Dios.\nPara que seamos dignos de alcanzar\nlas promesas de Nuestro Señor Jesucristo.\nAmén.`},
-  jacFinal: {titulo: "Jaculatoria Final", texto: `Ave María Purísima.\nSin pecado concebida.\n\n✦`},
-};
+      const ORACIONES = {
+        senal: {
+          titulo: "Señal de la Cruz",
+          texto: `Por la señal de la Santa Cruz,\nde nuestros enemigos,\nlíbranos Señor Dios nuestro.\n\nEn el nombre del Padre,\ny del Hijo,\ny del Espíritu Santo.\nAmén.`,
+        },
+        credo: {
+          titulo: "Credo Apostólico",
+          texto: `Creo en Dios Padre Todopoderoso,\nCreador del cielo y de la tierra.\n\nCreo en Jesucristo, su único Hijo, Nuestro Señor,\nque fue concebido por obra y gracia del Espíritu Santo,\nnació de Santa María Virgen,\npadeció bajo el poder de Poncio Pilato,\nfue crucificado, muerto y sepultado,\ndescendió a los infiernos,\nal tercer día resucitó de entre los muertos,\nsubió a los cielos\ny está sentado a la derecha de Dios Padre Todopoderoso.\nDesde allí ha de venir a juzgar a vivos y muertos.\n\nCreo en el Espíritu Santo,\nla Santa Iglesia Católica,\nla comunión de los santos,\nel perdón de los pecados,\nla resurrección de la carne\ny la vida eterna.\nAmén.`,
+        },
+        abreLabios: {
+          titulo: "Jaculatoria Inicial",
+          texto: `Abre Señor mis labios,\npara alabar tu nombre\ny el de Tu Santa Madre.`,
+        },
+        contricion: {
+          titulo: "Acto de Contrición",
+          texto: `Señor mío Jesucristo,\nDios y Hombre verdadero,\nCreador, Padre y Redentor mío;\npor ser Tú quien eres, Bondad infinita,\ny porque te amo sobre todas las cosas,\nme pesa de todo corazón haberte ofendido.\nTambién me pesa porque puedes castigarme con las penas del infierno.\nAyudado de tu divina gracia,\npropongo firmemente nunca más pecar,\nconfesarme y cumplir la penitencia que me fuere impuesta.\nAmén.`,
+        },
+        padre: {
+          titulo: "Padre Nuestro",
+          texto: `Padre nuestro, que estás en el cielo,\nsantificado sea tu Nombre;\nvenga a nosotros tu reino;\nhágase tu voluntad en la tierra como en el cielo.\n\nDanos hoy nuestro pan de cada día;\nperdona nuestras ofensas\ncomo también nosotros perdonamos a los que nos ofenden;\nno nos dejes caer en la tentación\ny líbranos del mal.\nAmén.`,
+        },
+        ave: {
+          titulo: "Ave María",
+          texto: `Dios te salve, María,\nllena eres de gracia;\nel Señor es contigo;\nbendita Tú eres entre todas las mujeres,\ny bendito es el fruto de tu vientre, Jesús.\n\nSanta María, Madre de Dios,\nruega por nosotros, pecadores,\nahora y en la hora de nuestra muerte.\nAmén.`,
+        },
+        tresAves: {
+          titulo: "Tres Ave Marías",
+          texto: `Dios te salve, María,\nllena eres de gracia;\nel Señor es contigo;\nbendita Tú eres entre todas las mujeres,\ny bendito es el fruto de tu vientre, Jesús.\n\nSanta María, Madre de Dios,\nruega por nosotros, pecadores,\nahora y en la hora de nuestra muerte.\nAmén.\n\n✦ ✦ ✦\n(Rezar tres veces)`,
+        },
+        gloria: {
+          titulo: "Gloria",
+          texto: `Gloria al Padre y al Hijo\ny al Espíritu Santo.\nComo era en el principio,\nahora y siempre,\npor los siglos de los siglos.\nAmén.`,
+        },
+        fatima: {
+          titulo: "Jaculatoria de Fátima",
+          texto: `Oh Jesús mío,\nperdona nuestros pecados,\nlíbranos del fuego del infierno,\nlleva al cielo a todas las almas,\nespecialmente a las más necesitadas\nde tu infinita misericordia.\nAmén.`,
+        },
+        mariaGracia: {
+          titulo: "María, Madre de Gracia",
+          texto: `María, Madre de gracia,\nMadre de misericordia.\nDefiéndenos de nuestros enemigos\ny ampáranos ahora y en la hora de nuestra muerte.\nAmén.`,
+        },
+        letanias: {
+          titulo: "Letanías Lauretanas",
+          texto: `Santa María, ruega por nosotros.\nSanta Madre de Dios, ruega por nosotros.\nSanta Virgen de las vírgenes, ruega por nosotros.\nMadre de Cristo, ruega por nosotros.\nMadre de la Iglesia, ruega por nosotros.\nMadre de Misericordia, ruega por nosotros.\nReina del Santo Rosario, ruega por nosotros.\nReina de la paz, ruega por nosotros.`,
+        },
+        cordero: {
+          titulo: "Cordero de Dios",
+          texto: `Cordero de Dios, que quitas el pecado del mundo.\nPerdónanos, Señor.\n\nCordero de Dios, que quitas el pecado del mundo.\nEscúchanos, Señor.\n\nCordero de Dios, que quitas el pecado del mundo.\nTen piedad de nosotros.\n\nRuega por nosotros, Santa Madre de Dios.\nPara que seamos dignos de alcanzar\nlas promesas de Nuestro Señor Jesucristo.\nAmén.`,
+        },
+        oracionFinal: {
+          titulo: "Oración Final",
+          texto: `Te pedimos, Señor,\nnos concedas a nosotros tus siervos,\ngozar de perpetua salud de alma y cuerpo,\ny por la gloriosa intercesión\nde la bienaventurada siempre Virgen María,\nseamos librados de las tristezas presentes\ny gocemos de la eterna alegría.\nPor Jesucristo, nuestro Señor.\nAmén.`,
+        },
+        salve: {
+          titulo: "Salve Regina",
+          texto: `Dios te salve, Reina y Madre de misericordia,\nvida, dulzura y esperanza nuestra; Dios te salve.\n\nA Ti llamamos los desterrados hijos de Eva;\na Ti suspiramos, gimiendo y llorando,\nen este valle de lágrimas.\n\nEa, pues, Señora, abogada nuestra,\nvuelve a nosotros esos tus ojos misericordiosos;\ny después de este destierro muéstranos a Jesús,\nfruto bendito de tu vientre.\n\n¡Oh clementísima, oh piadosa,\noh dulce Virgen María!\n\nRuega por nosotros, Santa Madre de Dios.\nPara que seamos dignos de alcanzar\nlas promesas de Nuestro Señor Jesucristo.\nAmén.`,
+        },
+        jacFinal: {
+          titulo: "Jaculatoria Final",
+          texto: `Ave María Purísima.\nSin pecado concebida.\n\n✦`,
+        },
+      };
 
-const MISTERIOS_SET = {
-  Gloriosos: {
-    dias: "Miércoles · Sábado · Domingo",
-    lista: [
-      {num:1, titulo:"La Resurrección de Jesucristo", desc:"Al tercer día Jesús resucita glorioso de entre los muertos.", fruto:"Fe en la resurrección"},
-      {num:2, titulo:"La Ascensión del Señor", desc:"Jesús sube al cielo cuarenta días después de resucitar.", fruto:"Esperanza en la vida eterna"},
-      {num:3, titulo:"La Venida del Espíritu Santo", desc:"Pentecostés: el Espíritu desciende sobre los Apóstoles.", fruto:"Amor y dones del Espíritu"},
-      {num:4, titulo:"La Asunción de María", desc:"La Virgen es llevada en cuerpo y alma al cielo.", fruto:"Devoción a María"},
-      {num:5, titulo:"La Coronación de María", desc:"María es coronada Reina del Cielo y de la tierra.", fruto:"Confianza en su intercesión"},
-    ]
-  },
-  Gozosos: {
-    dias: "Lunes · Sábado",
-    lista: [
-      {num:1, titulo:"La Anunciación del Ángel", desc:"El Ángel Gabriel anuncia a María que será Madre de Dios.", fruto:"Humildad"},
-      {num:2, titulo:"La Visitación a Santa Isabel", desc:"María visita a su prima Isabel.", fruto:"Caridad fraterna"},
-      {num:3, titulo:"El Nacimiento de Jesús", desc:"Jesús nace en Belén.", fruto:"Pobreza de espíritu"},
-      {num:4, titulo:"La Presentación en el Templo", desc:"María y José presentan al Niño Jesús.", fruto:"Obediencia"},
-      {num:5, titulo:"El Niño Perdido y Hallado", desc:"Jesús es hallado en el Templo entre los doctores.", fruto:"Amor a Dios"},
-    ]
-  },
-  Dolorosos: {
-    dias: "Martes · Viernes",
-    lista: [
-      {num:1, titulo:"La Oración en el Huerto", desc:"Jesús ora en Getsemaní.", fruto:"Contrición"},
-      {num:2, titulo:"La Flagelación del Señor", desc:"Jesús es azotado cruelmente.", fruto:"Mortificación"},
-      {num:3, titulo:"La Coronación de Espinas", desc:"Jesús es coronado con espinas.", fruto:"Valor moral"},
-      {num:4, titulo:"Jesús con la Cruz a Cuestas", desc:"Jesús carga su Cruz hasta el Calvario.", fruto:"Paciencia"},
-      {num:5, titulo:"La Crucifixión y Muerte de Jesús", desc:"Jesús muere en la Cruz por nuestra salvación.", fruto:"Salvación"},
-    ]
-  },
-  Luminosos: {
-    dias: "Jueves",
-    lista: [
-      {num:1, titulo:"El Bautismo de Jesús en el Jordán", desc:"El Padre proclama a Jesús su Hijo amado.", fruto:"Apertura a la gracia"},
-      {num:2, titulo:"Las Bodas de Caná", desc:"Jesús realiza su primer milagro.", fruto:"Fidelidad"},
-      {num:3, titulo:"El Anuncio del Reino de Dios", desc:"Jesús proclama la Buena Nueva.", fruto:"Conversión"},
-      {num:4, titulo:"La Transfiguración", desc:"Jesús se transfigura en el Monte Tabor.", fruto:"Deseo del cielo"},
-      {num:5, titulo:"La Institución de la Eucaristía", desc:"Jesús instituye la Eucaristía en la Última Cena.", fruto:"Adoración"},
-    ]
-  }
-};
+      const MISTERIOS_SET = {
+        Gloriosos: {
+          dias: "Miércoles · Sábado · Domingo",
+          lista: [
+            {
+              num: 1,
+              titulo: "La Resurrección de Jesucristo",
+              desc: "Al tercer día Jesús resucita glorioso de entre los muertos.",
+              fruto: "Fe en la resurrección",
+            },
+            {
+              num: 2,
+              titulo: "La Ascensión del Señor",
+              desc: "Jesús sube al cielo cuarenta días después de resucitar.",
+              fruto: "Esperanza en la vida eterna",
+            },
+            {
+              num: 3,
+              titulo: "La Venida del Espíritu Santo",
+              desc: "Pentecostés: el Espíritu desciende sobre los Apóstoles.",
+              fruto: "Amor y dones del Espíritu",
+            },
+            {
+              num: 4,
+              titulo: "La Asunción de María",
+              desc: "La Virgen es llevada en cuerpo y alma al cielo.",
+              fruto: "Devoción a María",
+            },
+            {
+              num: 5,
+              titulo: "La Coronación de María",
+              desc: "María es coronada Reina del Cielo y de la tierra.",
+              fruto: "Confianza en su intercesión",
+            },
+          ],
+        },
+        Gozosos: {
+          dias: "Lunes · Sábado",
+          lista: [
+            {
+              num: 1,
+              titulo: "La Anunciación del Ángel",
+              desc: "El Ángel Gabriel anuncia a María que será Madre de Dios.",
+              fruto: "Humildad",
+            },
+            {
+              num: 2,
+              titulo: "La Visitación a Santa Isabel",
+              desc: "María visita a su prima Isabel.",
+              fruto: "Caridad fraterna",
+            },
+            {
+              num: 3,
+              titulo: "El Nacimiento de Jesús",
+              desc: "Jesús nace en Belén.",
+              fruto: "Pobreza de espíritu",
+            },
+            {
+              num: 4,
+              titulo: "La Presentación en el Templo",
+              desc: "María y José presentan al Niño Jesús.",
+              fruto: "Obediencia",
+            },
+            {
+              num: 5,
+              titulo: "El Niño Perdido y Hallado",
+              desc: "Jesús es hallado en el Templo entre los doctores.",
+              fruto: "Amor a Dios",
+            },
+          ],
+        },
+        Dolorosos: {
+          dias: "Martes · Viernes",
+          lista: [
+            {
+              num: 1,
+              titulo: "La Oración en el Huerto",
+              desc: "Jesús ora en Getsemaní.",
+              fruto: "Contrición",
+            },
+            {
+              num: 2,
+              titulo: "La Flagelación del Señor",
+              desc: "Jesús es azotado cruelmente.",
+              fruto: "Mortificación",
+            },
+            {
+              num: 3,
+              titulo: "La Coronación de Espinas",
+              desc: "Jesús es coronado con espinas.",
+              fruto: "Valor moral",
+            },
+            {
+              num: 4,
+              titulo: "Jesús con la Cruz a Cuestas",
+              desc: "Jesús carga su Cruz hasta el Calvario.",
+              fruto: "Paciencia",
+            },
+            {
+              num: 5,
+              titulo: "La Crucifixión y Muerte de Jesús",
+              desc: "Jesús muere en la Cruz por nuestra salvación.",
+              fruto: "Salvación",
+            },
+          ],
+        },
+        Luminosos: {
+          dias: "Jueves",
+          lista: [
+            {
+              num: 1,
+              titulo: "El Bautismo de Jesús en el Jordán",
+              desc: "El Padre proclama a Jesús su Hijo amado.",
+              fruto: "Apertura a la gracia",
+            },
+            {
+              num: 2,
+              titulo: "Las Bodas de Caná",
+              desc: "Jesús realiza su primer milagro.",
+              fruto: "Fidelidad",
+            },
+            {
+              num: 3,
+              titulo: "El Anuncio del Reino de Dios",
+              desc: "Jesús proclama la Buena Nueva.",
+              fruto: "Conversión",
+            },
+            {
+              num: 4,
+              titulo: "La Transfiguración",
+              desc: "Jesús se transfigura en el Monte Tabor.",
+              fruto: "Deseo del cielo",
+            },
+            {
+              num: 5,
+              titulo: "La Institución de la Eucaristía",
+              desc: "Jesús instituye la Eucaristía en la Última Cena.",
+              fruto: "Adoración",
+            },
+          ],
+        },
+      };
 
-/* ============================================================
+      /* ============================================================
    ESTADO
 ============================================================ */
-let pasos = [];       // lista ordenada de {id, titulo, texto}
-let pasoActual = 0;
-let avesRezadas = 0;
-let misterioActivo = detectarMisterio();
+      let pasos = []; // lista ordenada de {id, titulo, texto}
+      let pasoActual = 0;
+      let avesRezadas = 0;
+      let misterioActivo = detectarMisterio();
 
-function detectarMisterio() {
-  const dia = new Date().getDay(); // 0=dom, 1=lun...
-  if (dia===0) return 'Gloriosos';
-  if (dia===1) return 'Gozosos';
-  if (dia===2) return 'Dolorosos';
-  if (dia===3) return 'Luminosos';
-  if (dia===4) return 'Dolorosos';
-  if (dia===5) return 'Dolorosos';
-  if (dia===6) return 'Gloriosos';
-  return 'Gloriosos';
-}
+      function detectarMisterio() {
+        const dia = new Date().getDay(); // 0=dom, 1=lun...
+        if (dia === 0) return "Gloriosos";
+        if (dia === 1) return "Gozosos";
+        if (dia === 2) return "Dolorosos";
+        if (dia === 3) return "Luminosos";
+        if (dia === 4) return "Dolorosos";
+        if (dia === 5) return "Dolorosos";
+        if (dia === 6) return "Gloriosos";
+        return "Gloriosos";
+      }
 
-/* ============================================================
+      /* ============================================================
    COSTRUCCION DE PASOS
 ============================================================ */
-function buildPasos() {
-  pasos = [];
-  const M = MISTERIOS_SET[misterioActivo];
+      function buildPasos() {
+        pasos = [];
+        const M = MISTERIOS_SET[misterioActivo];
 
-  // Intro
-  ['senal','credo','abreLabios','contricion','padre','tresAves','gloria'].forEach(k => {
-    pasos.push({id: k, ...ORACIONES[k]});
-  });
+        // Intro
+        [
+          "senal",
+          "credo",
+          "abreLabios",
+          "contricion",
+          "padre",
+          "tresAves",
+          "gloria",
+        ].forEach((k) => {
+          pasos.push({ id: k, ...ORACIONES[k] });
+        });
 
-  // Misterios x5
-  M.lista.forEach((m, i) => {
-    pasos.push({id: `m${i}_padre`, titulo: `${m.num}° Misterio · Padre Nuestro`, texto: ORACIONES.padre.texto});
-    pasos.push({id: `m${i}_ave`, titulo: `${m.num}° Misterio · Ave María (×10)`, texto: ORACIONES.ave.texto + '\n\n(Rezar diez veces)'});
-    pasos.push({id: `m${i}_gloria`, titulo: `${m.num}° Misterio · Gloria`, texto: ORACIONES.gloria.texto});
-    pasos.push({id: `m${i}_fatima`, titulo: `${m.num}° Misterio · Fátima`, texto: ORACIONES.fatima.texto});
-    pasos.push({id: `m${i}_gracia`, titulo: `${m.num}° Misterio · María, Madre de Gracia`, texto: ORACIONES.mariaGracia.texto});
-  });
+        // Misterios x5
+        M.lista.forEach((m, i) => {
+          pasos.push({
+            id: `m${i}_padre`,
+            titulo: `${m.num}° Misterio · Padre Nuestro`,
+            texto: ORACIONES.padre.texto,
+          });
+          pasos.push({
+            id: `m${i}_ave`,
+            titulo: `${m.num}° Misterio · Ave María (×10)`,
+            texto: ORACIONES.ave.texto + "\n\n(Rezar diez veces)",
+          });
+          pasos.push({
+            id: `m${i}_gloria`,
+            titulo: `${m.num}° Misterio · Gloria`,
+            texto: ORACIONES.gloria.texto,
+          });
+          pasos.push({
+            id: `m${i}_fatima`,
+            titulo: `${m.num}° Misterio · Fátima`,
+            texto: ORACIONES.fatima.texto,
+          });
+          pasos.push({
+            id: `m${i}_gracia`,
+            titulo: `${m.num}° Misterio · María, Madre de Gracia`,
+            texto: ORACIONES.mariaGracia.texto,
+          });
+        });
 
-  // Final
-  ['letanias','cordero','oracionFinal','salve','jacFinal'].forEach(k => {
-    pasos.push({id: k, ...ORACIONES[k]});
-  });
-}
+        // Final
+        ["letanias", "cordero", "oracionFinal", "salve", "jacFinal"].forEach(
+          (k) => {
+            pasos.push({ id: k, ...ORACIONES[k] });
+          },
+        );
+      }
 
-/* ============================================================
+      /* ============================================================
    RENDER
 ============================================================ */
-function render() {
-  buildPasos();
+      function render() {
+        buildPasos();
 
-  // Badge
-  const M = MISTERIOS_SET[misterioActivo];
-  document.getElementById('misterioBadge').textContent = `Misterios ${misterioActivo}  ·  ${M.dias}`;
+        // Badge
+        const M = MISTERIOS_SET[misterioActivo];
+        document.getElementById("misterioBadge").textContent =
+          `Misterios ${misterioActivo}  ·  ${M.dias}`;
 
-  renderIntroNav();
-  renderMisterios();
-  renderFinalNav();
-}
+        renderIntroNav();
+        renderMisterios();
+        renderFinalNav();
+      }
 
-function renderIntroNav() {
-  const keys = ['senal','credo','abreLabios','contricion','padre','tresAves','gloria'];
-  const labels = ['✝ Señal','Credo','Jaculatoria','Contrición','Padre Nuestro','3 Ave Marías','Gloria'];
-  const cont = document.getElementById('introNav');
-  cont.innerHTML = '';
-  keys.forEach((k, i) => {
-    const idx = pasos.findIndex(p => p.id === k);
-    const btn = document.createElement('button');
-    btn.className = 'nav-pill';
-    btn.textContent = labels[i];
-    btn.dataset.idx = idx;
-    btn.onclick = () => mostrarPaso(idx);
-    cont.appendChild(btn);
-  });
-}
+      function renderIntroNav() {
+        const keys = [
+          "senal",
+          "credo",
+          "abreLabios",
+          "contricion",
+          "padre",
+          "tresAves",
+          "gloria",
+        ];
+        const labels = [
+          "✝ Señal",
+          "Credo",
+          "Jaculatoria",
+          "Contrición",
+          "Padre Nuestro",
+          "3 Ave Marías",
+          "Gloria",
+        ];
+        const cont = document.getElementById("introNav");
+        cont.innerHTML = "";
+        keys.forEach((k, i) => {
+          const idx = pasos.findIndex((p) => p.id === k);
+          const btn = document.createElement("button");
+          btn.className = "nav-pill";
+          btn.textContent = labels[i];
+          btn.dataset.idx = idx;
+          btn.onclick = () => mostrarPaso(idx);
+          cont.appendChild(btn);
+        });
+      }
 
-function renderMisterios() {
-  const cont = document.getElementById('misteriosContainer');
-  cont.innerHTML = '';
-  const M = MISTERIOS_SET[misterioActivo];
+      function renderMisterios() {
+        const cont = document.getElementById("misteriosContainer");
+        cont.innerHTML = "";
+        const M = MISTERIOS_SET[misterioActivo];
 
-  // Selector de misterio
-  const sel = document.createElement('div');
-  sel.className = 'nav-section';
-  sel.innerHTML = `<div class="nav-label">Tipo de Misterio</div><div class="nav-pills" id="misterioSel"></div>`;
-  cont.appendChild(sel);
+        // Selector de misterio
+        const sel = document.createElement("div");
+        sel.className = "nav-section";
+        sel.innerHTML = `<div class="nav-label">Tipo de Misterio</div><div class="nav-pills" id="misterioSel"></div>`;
+        cont.appendChild(sel);
 
-  ['Gloriosos','Gozosos','Dolorosos','Luminosos'].forEach(tipo => {
-    const btn = document.createElement('button');
-    btn.className = 'nav-pill' + (tipo === misterioActivo ? ' active' : '');
-    btn.textContent = tipo;
-    btn.onclick = () => { misterioActivo = tipo; render(); };
-    document.getElementById('misterioSel')?.appendChild(btn);
-    sel.querySelector('#misterioSel').appendChild(btn);
-  });
+        ["Gloriosos", "Gozosos", "Dolorosos", "Luminosos"].forEach((tipo) => {
+          const btn = document.createElement("button");
+          btn.className =
+            "nav-pill" + (tipo === misterioActivo ? " active" : "");
+          btn.textContent = tipo;
+          btn.onclick = () => {
+            misterioActivo = tipo;
+            render();
+          };
+          document.getElementById("misterioSel")?.appendChild(btn);
+          sel.querySelector("#misterioSel").appendChild(btn);
+        });
 
-  M.lista.forEach((m, i) => {
-    const cuentasId = `cuentas_${misterioActivo}_${i}`;
-    const div = document.createElement('div');
-    div.className = 'misterio-section';
-    div.style.animationDelay = (i * 0.07) + 's';
+        M.lista.forEach((m, i) => {
+          const cuentasId = `cuentas_${misterioActivo}_${i}`;
+          const div = document.createElement("div");
+          div.className = "misterio-section";
+          div.style.animationDelay = i * 0.07 + "s";
 
-    const idxPadre = pasos.findIndex(p => p.id === `m${i}_padre`);
-    const idxAve = pasos.findIndex(p => p.id === `m${i}_ave`);
-    const idxGloria = pasos.findIndex(p => p.id === `m${i}_gloria`);
-    const idxFatima = pasos.findIndex(p => p.id === `m${i}_fatima`);
-    const idxGracia = pasos.findIndex(p => p.id === `m${i}_gracia`);
+          const idxPadre = pasos.findIndex((p) => p.id === `m${i}_padre`);
+          const idxAve = pasos.findIndex((p) => p.id === `m${i}_ave`);
+          const idxGloria = pasos.findIndex((p) => p.id === `m${i}_gloria`);
+          const idxFatima = pasos.findIndex((p) => p.id === `m${i}_fatima`);
+          const idxGracia = pasos.findIndex((p) => p.id === `m${i}_gracia`);
 
-    div.innerHTML = `
+          div.innerHTML = `
     <div class="misterio-card">
       <div class="misterio-header" onclick="toggleMisterio(${i})">
         <div class="misterio-num">${m.num}°</div>
@@ -926,171 +1390,191 @@ function renderMisterios() {
         <div style="margin-top:14px">
           <div class="decena-label">Avemarías rezadas</div>
           <div class="cuentas" id="${cuentasId}">
-            ${Array.from({length:10}, (_,j) => `<div class="cuenta" onclick="toggleCuenta(this,'${cuentasId}')"></div>`).join('')}
+            ${Array.from({ length: 10 }, (_, j) => `<div class="cuenta" onclick="toggleCuenta(this,'${cuentasId}')"></div>`).join("")}
           </div>
           <button class="cuentas-reset" onclick="resetCuentas('${cuentasId}')">limpiar</button>
         </div>
       </div>
     </div>`;
-    cont.appendChild(div);
-  });
-}
+          cont.appendChild(div);
+        });
+      }
 
-function renderFinalNav() {
-  const keys = ['letanias','cordero','oracionFinal','salve','jacFinal'];
-  const labels = ['Letanías','Cordero de Dios','Oración Final','Salve Regina','Jaculatoria'];
-  const cont = document.getElementById('finalNav');
-  cont.innerHTML = '';
-  keys.forEach((k, i) => {
-    const idx = pasos.findIndex(p => p.id === k);
-    const btn = document.createElement('button');
-    btn.className = 'nav-pill';
-    btn.textContent = labels[i];
-    btn.onclick = () => mostrarPaso(idx);
-    cont.appendChild(btn);
-  });
-}
+      function renderFinalNav() {
+        const keys = [
+          "letanias",
+          "cordero",
+          "oracionFinal",
+          "salve",
+          "jacFinal",
+        ];
+        const labels = [
+          "Letanías",
+          "Cordero de Dios",
+          "Oración Final",
+          "Salve Regina",
+          "Jaculatoria",
+        ];
+        const cont = document.getElementById("finalNav");
+        cont.innerHTML = "";
+        keys.forEach((k, i) => {
+          const idx = pasos.findIndex((p) => p.id === k);
+          const btn = document.createElement("button");
+          btn.className = "nav-pill";
+          btn.textContent = labels[i];
+          btn.onclick = () => mostrarPaso(idx);
+          cont.appendChild(btn);
+        });
+      }
 
-/* ============================================================
+      /* ============================================================
    MOSTRAR PASO
 ============================================================ */
-function mostrarPaso(idx) {
-  if (idx < 0 || idx >= pasos.length) return;
-  pasoActual = idx;
+      function mostrarPaso(idx) {
+        if (idx < 0 || idx >= pasos.length) return;
+        pasoActual = idx;
 
-  const paso = pasos[idx];
-  document.getElementById('panelTitulo').textContent = paso.titulo;
-  document.getElementById('panelTexto').textContent = paso.texto;
+        const paso = pasos[idx];
+        document.getElementById("panelTitulo").textContent = paso.titulo;
+        document.getElementById("panelTexto").textContent = paso.texto;
 
-  // Nav buttons state
-  document.getElementById('btnAnterior').disabled = idx === 0;
-  document.getElementById('btnSiguiente').disabled = idx === pasos.length - 1;
+        // Nav buttons state
+        document.getElementById("btnAnterior").disabled = idx === 0;
+        document.getElementById("btnSiguiente").disabled =
+          idx === pasos.length - 1;
 
-  // Progress bar
-  const pct = Math.round((idx / (pasos.length - 1)) * 100);
-  document.getElementById('progressBar').style.width = pct + '%';
+        // Progress bar
+        const pct = Math.round((idx / (pasos.length - 1)) * 100);
+        document.getElementById("progressBar").style.width = pct + "%";
 
-  // Update all pills
-  document.querySelectorAll('.nav-pill').forEach(btn => {
-    const btnIdx = parseInt(btn.dataset.idx);
-    btn.classList.toggle('active', btnIdx === idx);
-    btn.classList.toggle('next', btnIdx === idx + 1);
-  });
+        // Update all pills
+        document.querySelectorAll(".nav-pill").forEach((btn) => {
+          const btnIdx = parseInt(btn.dataset.idx);
+          btn.classList.toggle("active", btnIdx === idx);
+          btn.classList.toggle("next", btnIdx === idx + 1);
+        });
 
-  document.querySelectorAll('.mini-btn[data-idx]').forEach(btn => {
-    const btnIdx = parseInt(btn.dataset.idx);
-    btn.classList.toggle('active', btnIdx === idx);
-  });
+        document.querySelectorAll(".mini-btn[data-idx]").forEach((btn) => {
+          const btnIdx = parseInt(btn.dataset.idx);
+          btn.classList.toggle("active", btnIdx === idx);
+        });
 
-  // Open modal
-  document.getElementById('oracionOverlay').classList.add('open');
-  // Re-trigger animation
-  const modal = document.getElementById('oracionModal');
-  modal.style.animation = 'none';
-  modal.offsetHeight; // reflow
-  modal.style.animation = '';
-}
+        // Open modal
+        document.getElementById("oracionOverlay").classList.add("open");
+        // Re-trigger animation
+        const modal = document.getElementById("oracionModal");
+        modal.style.animation = "none";
+        modal.offsetHeight; // reflow
+        modal.style.animation = "";
+      }
 
-function cerrarOracion() {
-  document.getElementById('oracionOverlay').classList.remove('open');
-}
+      function cerrarOracion() {
+        document.getElementById("oracionOverlay").classList.remove("open");
+      }
 
-function navegar(dir) {
-  mostrarPaso(pasoActual + dir);
-}
+      function navegar(dir) {
+        mostrarPaso(pasoActual + dir);
+      }
 
-/* ============================================================
+      /* ============================================================
    MISTERIO TOGGLE
 ============================================================ */
-function toggleMisterio(i) {
-  const mc = document.getElementById(`mc_${i}`);
-  const tog = document.getElementById(`tog_${i}`);
-  const isOpen = mc.classList.toggle('open');
-  tog.textContent = isOpen ? '▾' : '▸';
-}
+      function toggleMisterio(i) {
+        const mc = document.getElementById(`mc_${i}`);
+        const tog = document.getElementById(`tog_${i}`);
+        const isOpen = mc.classList.toggle("open");
+        tog.textContent = isOpen ? "▾" : "▸";
+      }
 
-/* ============================================================
+      /* ============================================================
    CUENTAS
 ============================================================ */
-function toggleCuenta(el, groupId) {
-  el.classList.toggle('rezada');
-  recalcularAves();
-}
+      function toggleCuenta(el, groupId) {
+        el.classList.toggle("rezada");
+        recalcularAves();
+      }
 
-function resetCuentas(groupId) {
-  document.querySelectorAll(`#${groupId} .cuenta`).forEach(c => c.classList.remove('rezada'));
-  recalcularAves();
-}
+      function resetCuentas(groupId) {
+        document
+          .querySelectorAll(`#${groupId} .cuenta`)
+          .forEach((c) => c.classList.remove("rezada"));
+        recalcularAves();
+      }
 
-function recalcularAves() {
-  avesRezadas = document.querySelectorAll('.cuenta.rezada').length;
-  document.getElementById('contadorAves').textContent = avesRezadas;
-}
+      function recalcularAves() {
+        avesRezadas = document.querySelectorAll(".cuenta.rezada").length;
+        document.getElementById("contadorAves").textContent = avesRezadas;
+      }
 
-/* ============================================================
+      /* ============================================================
    TIMER
 ============================================================ */
-let timerInterval = null;
-let timerTotal = 30;
-let timerLeft = 30;
+      let timerInterval = null;
+      let timerTotal = 30;
+      let timerLeft = 30;
 
-function abrirTimer() {
-  document.getElementById('timerOverlay').classList.add('open');
-  mostrarTimer(30);
-}
+      function abrirTimer() {
+        document.getElementById("timerOverlay").classList.add("open");
+        mostrarTimer(30);
+      }
 
-function cerrarTimer() {
-  document.getElementById('timerOverlay').classList.remove('open');
-  clearInterval(timerInterval);
-}
+      function cerrarTimer() {
+        document.getElementById("timerOverlay").classList.remove("open");
+        clearInterval(timerInterval);
+      }
 
-function mostrarTimer(seg) {
-  clearInterval(timerInterval);
-  timerLeft = seg;
-  timerTotal = seg;
-  actualizarTimerUI();
-}
+      function mostrarTimer(seg) {
+        clearInterval(timerInterval);
+        timerLeft = seg;
+        timerTotal = seg;
+        actualizarTimerUI();
+      }
 
-function iniciarTimer(seg) {
-  clearInterval(timerInterval);
-  timerLeft = seg;
-  timerTotal = seg;
-  actualizarTimerUI();
-  timerInterval = setInterval(() => {
-    timerLeft--;
-    actualizarTimerUI();
-    if (timerLeft <= 0) {
-      clearInterval(timerInterval);
-      // gentle audio cue via AudioContext
-      try {
-        const ctx = new AudioContext();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.frequency.value = 432;
-        gain.gain.setValueAtTime(0.3, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
-        osc.start(); osc.stop(ctx.currentTime + 1.5);
-      } catch(e) {}
-    }
-  }, 1000);
-}
+      function iniciarTimer(seg) {
+        clearInterval(timerInterval);
+        timerLeft = seg;
+        timerTotal = seg;
+        actualizarTimerUI();
+        timerInterval = setInterval(() => {
+          timerLeft--;
+          actualizarTimerUI();
+          if (timerLeft <= 0) {
+            clearInterval(timerInterval);
+            // gentle audio cue via AudioContext
+            try {
+              const ctx = new AudioContext();
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.frequency.value = 432;
+              gain.gain.setValueAtTime(0.3, ctx.currentTime);
+              gain.gain.exponentialRampToValueAtTime(
+                0.001,
+                ctx.currentTime + 1.5,
+              );
+              osc.start();
+              osc.stop(ctx.currentTime + 1.5);
+            } catch (e) {}
+          }
+        }, 1000);
+      }
 
-function actualizarTimerUI() {
-  const m = Math.floor(timerLeft / 60);
-  const s = timerLeft % 60;
-  document.getElementById('timerDisplay').textContent = m + ':' + String(s).padStart(2,'0');
+      function actualizarTimerUI() {
+        const m = Math.floor(timerLeft / 60);
+        const s = timerLeft % 60;
+        document.getElementById("timerDisplay").textContent =
+          m + ":" + String(s).padStart(2, "0");
 
-  const circ = 2 * Math.PI * 54;
-  const offset = circ * (1 - timerLeft / timerTotal);
-  document.getElementById('timerRing').style.strokeDashoffset = offset;
-}
+        const circ = 2 * Math.PI * 54;
+        const offset = circ * (1 - timerLeft / timerTotal);
+        document.getElementById("timerRing").style.strokeDashoffset = offset;
+      }
 
-/* ============================================================
+      /* ============================================================
    INIT
 ============================================================ */
-render();
-
-</script>
-</body>
+      render();
+    </script>
+  </body>
 </html>
