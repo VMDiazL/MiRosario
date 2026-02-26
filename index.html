@@ -204,7 +204,7 @@
         font-family: "Cinzel", serif;
         font-size: 10px;
         letter-spacing: 0.25em;
-        color: var(--gold-dim) !important;
+        color: var(--gold) !important;
         text-transform: uppercase;
         white-space: nowrap;
       }
@@ -219,7 +219,7 @@
         font-family: "Cinzel", serif;
         font-size: 10px;
         letter-spacing: 0.25em;
-        color: var(--gold) !important;
+        color: var(--text) !important;
         text-transform: uppercase;
         margin-bottom: 10px;
         padding-left: 2px;
@@ -244,10 +244,12 @@
         line-height: 1.25;
         transition: all 0.18s;
         text-align: center;
-        min-height: 52px;
+        min-height: 60px;
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-direction: column;
+        gap: 2px;
         touch-action: manipulation;
         -webkit-appearance: none;
       }
@@ -269,27 +271,78 @@
         color: var(--gold) !important;
       }
 
-      /* Misterio type strip — pill-shaped horizontal scroll */
-      #misterioSel {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        overflow-x: auto;
-        gap: 8px;
-        padding-bottom: 4px;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
+      /* Number badge + label inside pill */
+      .pill-num {
+        font-family: "Cinzel", serif;
+        font-size: 9px;
+        letter-spacing: 0.12em;
+        color: var(--gold);
+        line-height: 1;
+        display: block;
+        transition: color 0.25s;
       }
-      #misterioSel::-webkit-scrollbar {
-        display: none;
+      .pill-label {
+        display: block;
+        line-height: 1.25;
+      }
+      .nav-pill.active .pill-num {
+        color: rgba(134, 239, 172, 0.7);
+      }
+      .mini-btn.active .pill-num {
+        color: rgba(134, 239, 172, 0.7);
+      }
+
+      /* Visited: slightly dimmed, gold number */
+      .nav-pill.visited {
+        opacity: 0.72;
+        border-color: rgba(201, 168, 76, 0.28) !important;
+      }
+      .mini-btn.visited {
+        opacity: 0.72;
+        border-color: rgba(201, 168, 76, 0.28) !important;
+      }
+      .nav-pill.visited .pill-num,
+      .mini-btn.visited .pill-num {
+        color: var(--gold);
+      }
+      .nav-pill.active,
+      .mini-btn.active {
+        opacity: 1 !important;
+      }
+
+      /* Next-up: golden pulse to draw attention */
+      @keyframes nextPulse {
+        0%,
+        100% {
+          border-color: rgba(232, 204, 128, 0.35);
+          box-shadow: none;
+        }
+        50% {
+          border-color: var(--gold-light);
+          box-shadow: 0 0 12px rgba(232, 204, 128, 0.3);
+        }
+      }
+      .nav-pill.next {
+        animation: nextPulse 1.8s ease-in-out infinite !important;
+        color: var(--gold-light) !important;
+      }
+      .mini-btn.next {
+        animation: nextPulse 1.8s ease-in-out infinite !important;
+        color: var(--gold-light) !important;
+      }
+
+      /* Misterio type selector — 2x2 grid, always fits screen */
+      #misterioSel {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8px !important;
       }
       #misterioSel .nav-pill {
-        flex: 0 0 auto !important;
-        min-width: 100px;
-        border-radius: 24px !important;
-        padding: 9px 18px !important;
-        min-height: 40px !important;
+        border-radius: 10px !important;
+        padding: 11px 8px !important;
+        min-height: 46px !important;
         font-size: 14px !important;
+        width: 100% !important;
       }
 
       /* Mini buttons — grid inside misterio */
@@ -310,10 +363,12 @@
         font-size: 14px;
         line-height: 1.2;
         text-align: center;
-        min-height: 44px;
+        min-height: 56px;
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-direction: column;
+        gap: 2px;
         transition: all 0.18s;
         touch-action: manipulation;
         -webkit-appearance: none;
@@ -386,8 +441,7 @@
       }
       .misterio-desc {
         font-size: 13px;
-        color: var(--text-dim) !important;
-        font-style: italic;
+        color: var(--text) !important;
       }
       .misterio-fruto {
         font-size: 11px;
@@ -518,11 +572,40 @@
         border-radius: 16px 16px 0 0;
         flex-shrink: 0;
       }
+      .modal-header-left {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        flex: 1;
+        min-width: 0;
+      }
+      .modal-context {
+        font-family: "Cinzel", serif;
+        font-size: 9px;
+        letter-spacing: 0.2em;
+        color: var(--gold-dim) !important;
+        text-transform: uppercase;
+      }
       .oracion-titulo {
         font-family: "Cinzel", serif;
         font-size: 13px;
-        letter-spacing: 0.1em;
+        letter-spacing: 0.08em;
         color: var(--gold) !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      /* Thin progress bar under modal header */
+      .modal-progress-track {
+        height: 2px;
+        background: rgba(201, 168, 76, 0.1);
+        flex-shrink: 0;
+      }
+      .modal-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--gold-dim), var(--gold-light));
+        transition: width 0.35s ease;
+        box-shadow: 0 0 6px rgba(201, 168, 76, 0.5);
       }
       .modal-close {
         background: rgba(201, 168, 76, 0.06) !important;
@@ -776,10 +859,16 @@
     >
       <div class="oracion-modal" id="oracionModal">
         <div class="oracion-modal-header">
-          <span class="oracion-titulo" id="panelTitulo">–</span>
+          <div class="modal-header-left">
+            <div class="modal-context" id="modalContext"></div>
+            <span class="oracion-titulo" id="panelTitulo">–</span>
+          </div>
           <button class="modal-close" onclick="cerrarOracion()" title="Cerrar">
             ✕
           </button>
+        </div>
+        <div class="modal-progress-track">
+          <div class="modal-progress-fill" id="modalProgressFill"></div>
         </div>
         <div class="oracion-modal-body">
           <div class="oracion-texto" id="panelTexto"></div>
@@ -886,13 +975,13 @@
         },
         jacFinal: {
           titulo: "Jaculatoria Final",
-          texto: `Ave María Purísima.\nSin pecado concebida.\n\n✦`,
+          texto: `Ave María Purísima.\nR: Sin pecado concebida.\n\n📿`,
         },
       };
 
       const MISTERIOS_SET = {
         Gloriosos: {
-          dias: "Miércoles · Sábado · Domingo",
+          dias: "Miércoles · Domingo",
           lista: [
             {
               num: 1,
@@ -1033,6 +1122,10 @@
         },
       };
 
+      function ordinal(n) {
+        return ["", "1°", "2°", "3°", "4°", "5°"][n] || n + "°";
+      }
+
       let pasos = [],
         pasoActual = 0,
         avesRezadas = 0;
@@ -1040,16 +1133,16 @@
         "Gloriosos",
         "Gozosos",
         "Dolorosos",
+        "Gloriosos",
         "Luminosos",
         "Dolorosos",
-        "Dolorosos",
-        "Gloriosos",
+        "Gozosos",
       ][new Date().getDay()];
 
       function buildPasos() {
         pasos = [];
         const M = MISTERIOS_SET[misterioActivo];
-        [
+        const introKeys = [
           "senal",
           "credo",
           "abreLabios",
@@ -1057,36 +1150,68 @@
           "padre",
           "tresAves",
           "gloria",
-        ].forEach((k) => pasos.push({ id: k, ...ORACIONES[k] }));
+        ];
+        introKeys.forEach((k, i) =>
+          pasos.push({
+            id: k,
+            ...ORACIONES[k],
+            seccion: "Introducción",
+            seccionPaso: i + 1,
+            seccionTotal: introKeys.length,
+          }),
+        );
         M.lista.forEach((m, i) => {
-          pasos.push({
-            id: `m${i}_padre`,
-            titulo: `${m.num}° Misterio · Padre Nuestro`,
-            texto: ORACIONES.padre.texto,
-          });
-          pasos.push({
-            id: `m${i}_ave`,
-            titulo: `${m.num}° Misterio · Ave María (×10)`,
-            texto: ORACIONES.ave.texto + "\n\n(Rezar diez veces)",
-          });
-          pasos.push({
-            id: `m${i}_gloria`,
-            titulo: `${m.num}° Misterio · Gloria`,
-            texto: ORACIONES.gloria.texto,
-          });
-          pasos.push({
-            id: `m${i}_fatima`,
-            titulo: `${m.num}° Misterio · Fátima`,
-            texto: ORACIONES.fatima.texto,
-          });
-          pasos.push({
-            id: `m${i}_gracia`,
-            titulo: `${m.num}° Misterio · María, Madre de Gracia`,
-            texto: ORACIONES.mariaGracia.texto,
-          });
+          const sub = [
+            {
+              id: `m${i}_padre`,
+              titulo: `${m.num}° · Padre Nuestro`,
+              texto: ORACIONES.padre.texto,
+            },
+            {
+              id: `m${i}_ave`,
+              titulo: `${m.num}° · Ave María (×10)`,
+              texto: ORACIONES.ave.texto + "\n\n(Rezar diez veces)",
+            },
+            {
+              id: `m${i}_gloria`,
+              titulo: `${m.num}° · Gloria`,
+              texto: ORACIONES.gloria.texto,
+            },
+            {
+              id: `m${i}_fatima`,
+              titulo: `${m.num}° · Fátima`,
+              texto: ORACIONES.fatima.texto,
+            },
+            {
+              id: `m${i}_gracia`,
+              titulo: `${m.num}° · Madre de Gracia`,
+              texto: ORACIONES.mariaGracia.texto,
+            },
+          ];
+          sub.forEach((p, j) =>
+            pasos.push({
+              ...p,
+              seccion: `Misterio ${m.num}° — ${m.titulo.replace(/^(La |El |Las |Los )/, "")}`,
+              seccionPaso: j + 1,
+              seccionTotal: sub.length,
+            }),
+          );
         });
-        ["letanias", "cordero", "oracionFinal", "salve", "jacFinal"].forEach(
-          (k) => pasos.push({ id: k, ...ORACIONES[k] }),
+        const finalKeys = [
+          "letanias",
+          "cordero",
+          "oracionFinal",
+          "salve",
+          "jacFinal",
+        ];
+        finalKeys.forEach((k, i) =>
+          pasos.push({
+            id: k,
+            ...ORACIONES[k],
+            seccion: "Conclusión",
+            seccionPaso: i + 1,
+            seccionTotal: finalKeys.length,
+          }),
         );
       }
 
@@ -1135,6 +1260,7 @@
             makePill(
               labels[i],
               pasos.findIndex((p) => p.id === k),
+              i + 1,
             ),
           ),
         );
@@ -1162,6 +1288,7 @@
             makePill(
               labels[i],
               pasos.findIndex((p) => p.id === k),
+              i + 1,
             ),
           ),
         );
@@ -1177,11 +1304,17 @@
         sel.className = "nav-section";
         sel.innerHTML = `<div class="nav-label">Tipo de Misterio</div><div id="misterioSel"></div>`;
         cont.appendChild(sel);
+        const diasMap = {
+          Gloriosos: "Mié · Dom",
+          Gozosos: "Lun · Sáb",
+          Dolorosos: "Mar · Vie",
+          Luminosos: "Jue",
+        };
         ["Gloriosos", "Gozosos", "Dolorosos", "Luminosos"].forEach((tipo) => {
           const btn = document.createElement("button");
           btn.className =
             "nav-pill" + (tipo === misterioActivo ? " active" : "");
-          btn.textContent = tipo;
+          btn.innerHTML = `<span class="pill-label" style="font-size:15px">${tipo}</span><span class="pill-num" style="margin-top:3px;margin-bottom:0;font-size:9px;letter-spacing:0.12em">${diasMap[tipo]}</span>`;
           btn.onclick = () => {
             misterioActivo = tipo;
             render();
@@ -1204,7 +1337,7 @@
             <div class="misterio-header" onclick="toggleMisterio(${i})">
               <div class="misterio-num">${m.num}°</div>
               <div class="misterio-info">
-                <div class="misterio-title">${m.titulo}</div>
+                <div class="misterio-title">${ordinal(m.num)} Misterio: ${m.titulo}</div>
                 <div class="misterio-desc">${m.desc}</div>
                 <div class="misterio-fruto">Fruto: ${m.fruto}</div>
               </div>
@@ -1212,11 +1345,11 @@
             </div>
             <div class="misterio-content" id="mc_${i}">
               <div class="misterio-oraciones">
-                <button class="mini-btn" data-idx="${ip}"  onclick="mostrarPaso(${ip})">Padre Nuestro</button>
-                <button class="mini-btn" data-idx="${ia}"  onclick="mostrarPaso(${ia})">Ave María ×10</button>
-                <button class="mini-btn" data-idx="${ig}"  onclick="mostrarPaso(${ig})">Gloria</button>
-                <button class="mini-btn" data-idx="${ift}" onclick="mostrarPaso(${ift})">Fátima</button>
-                <button class="mini-btn" data-idx="${igr}" onclick="mostrarPaso(${igr})">Madre de Gracia</button>
+                <button class="mini-btn" data-idx="${ip}"  onclick="mostrarPaso(${ip})"><span class="pill-num">1</span><span class="pill-label">Padre Nuestro</span></button>
+                <button class="mini-btn" data-idx="${ia}"  onclick="mostrarPaso(${ia})"><span class="pill-num">2</span><span class="pill-label">Ave María ×10</span></button>
+                <button class="mini-btn" data-idx="${ig}"  onclick="mostrarPaso(${ig})"><span class="pill-num">3</span><span class="pill-label">Gloria</span></button>
+                <button class="mini-btn" data-idx="${ift}" onclick="mostrarPaso(${ift})"><span class="pill-num">4</span><span class="pill-label">Fátima</span></button>
+                <button class="mini-btn" data-idx="${igr}" onclick="mostrarPaso(${igr})"><span class="pill-num">5</span><span class="pill-label">Madre de Gracia</span></button>
                 <button class="mini-btn" onclick="abrirTimer()">⏱ Meditar</button>
               </div>
               <div style="margin-top:14px">
@@ -1237,6 +1370,15 @@
         pasoActual = idx;
         const paso = pasos[idx];
         document.getElementById("panelTitulo").textContent = paso.titulo;
+        // Context breadcrumb
+        const ctx = document.getElementById("modalContext");
+        if (ctx && paso.seccion)
+          ctx.textContent = `${paso.seccion}  ·  ${paso.seccionPaso} de ${paso.seccionTotal}`;
+        // Section progress fill
+        const fill = document.getElementById("modalProgressFill");
+        if (fill && paso.seccionTotal)
+          fill.style.width =
+            Math.round((paso.seccionPaso / paso.seccionTotal) * 100) + "%";
         document.getElementById("panelTexto").textContent = paso.texto;
         document.getElementById("btnAnterior").disabled = idx === 0;
         document.getElementById("btnSiguiente").disabled =
@@ -1247,12 +1389,16 @@
           const n = parseInt(b.dataset.idx);
           b.classList.toggle("active", n === idx);
           b.classList.toggle("next", n === idx + 1);
+          if (n === idx && !b.classList.contains("visited"))
+            b.classList.add("visited");
         });
-        document
-          .querySelectorAll(".mini-btn[data-idx]")
-          .forEach((b) =>
-            b.classList.toggle("active", parseInt(b.dataset.idx) === idx),
-          );
+        document.querySelectorAll(".mini-btn[data-idx]").forEach((b) => {
+          const n = parseInt(b.dataset.idx);
+          b.classList.toggle("active", n === idx);
+          b.classList.toggle("next", n === idx + 1);
+          if (n === idx && !b.classList.contains("visited"))
+            b.classList.add("visited");
+        });
         document.getElementById("oracionOverlay").classList.add("open");
         const modal = document.getElementById("oracionModal");
         modal.style.animation = "none";
