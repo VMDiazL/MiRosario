@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Santo Rosario</title>
+
+<style>
+body{
+background:#0f172a;
+color:#e2e8f0;
+font-family:system-ui;
+margin:0;
+padding:15px;
+}
+
+h2,h4,h6{
+margin:10px 0;
+}
+
+.card-dark h6{
+font-size:18px; /* antes era tamaño pequeño por defecto */
+font-weight:600;
+}
+
+button{
+background:#1e293b;
+color:#fff;
+border:1px solid #334155;
+padding:6px 10px;
+margin:4px 2px;
+border-radius:6px;
+cursor:pointer;
+font-size:14px;
+transition:0.2s;
+}
+
+button:hover{
+background:#334155;
+}
+
+button.actual{
+border:2px solid #22c55e;
+}
+
+button.siguiente{
+border:2px solid #facc15;
+}
+
+.card-dark{
+background:#1e293b;
+padding:12px;
+margin:10px 0;
+border-radius:8px;
+}
+
+.oracion{
+display:none;
+margin-top:8px;
+white-space:pre-line;
+font-size:14px;
+color:#cbd5e1;
+}
+
+.rosario{
+display:flex;
+flex-wrap:wrap;
+gap:4px;
+margin:8px 0;
+}
+
+.cuenta{
+width:14px;
+height:14px;
+border-radius:50%;
+background:#475569;
+cursor:pointer;
+}
+
+.cuenta.activa{
+background:#22c55e;
+}
+</style>
+</head>
+
+<body>
+
+<h2>📿 Santo Rosario</h2>
+<div id="contenido"></div>
+
+<script>
+
+let botones=[];
+let indiceActual=0;
+
+function cerrarTodas(){
+document.querySelectorAll(".oracion").forEach(el=>{
+el.style.display="none";
+});
+}
+
+function marcarPaso(i){
+indiceActual=i;
+
+botones.forEach((b,index)=>{
+b.classList.remove("actual","siguiente");
+
+if(index===indiceActual){
+b.classList.add("actual");
+}
+
+if(index===indiceActual+1){
+b.classList.add("siguiente");
+}
+});
+}
+
+function toggle(id,index){
+cerrarTodas();
+document.getElementById(id).style.display="block";
+marcarPaso(index);
+}
+
+function crearOracion(titulo,texto,id){
+return `
+<button class="paso-btn">${titulo}</button>
+<div id="${id}" class="oracion">${texto}</div>
+`;
+}
+
+function crearRosario(){
+let html=`<div class="rosario">`;
+for(let i=0;i<10;i++){
+html+=`<div class="cuenta" onclick="this.classList.toggle('activa')"></div>`;
+}
+html+=`</div>`;
+return html;
+}
+
+/* ORACIONES COMPLETAS */
+
+const ORACIONES={
+
+senal:`Por la señal de la Santa Cruz,
+de nuestros enemigos,
+líbranos Señor Dios nuestro.
+En el nombre del Padre,
+y del Hijo,
+y del Espíritu Santo.
+Amén.`,
+
+credo:`Creo en Dios Padre Todopoderoso,
+Creador del cielo y de la tierra.
+Creo en Jesucristo, su único Hijo, Nuestro Señor,
+que fue concebido por obra y gracia del Espíritu Santo,
+nació de Santa María Virgen,
+padeció bajo el poder de Poncio Pilato,
+fue crucificado, muerto y sepultado,
+descendió a los infiernos,
+al tercer día resucitó de entre los muertos,
+subió a los cielos
+y está sentado a la derecha de Dios Padre Todopoderoso.
+Desde allí ha de venir a juzgar a vivos y muertos.
+Creo en el Espíritu Santo,
+la Santa Iglesia Católica,
+la comunión de los santos,
+el perdón de los pecados,
+la resurrección de la carne
+y la vida eterna.
+Amén.`,
+
+abreLabios:`Abre Señor mis labios,
+para alabar tu nombre
+y el de Tu Santa Madre.`,
+
+contricion:`Señor mío Jesucristo,
+Dios y Hombre verdadero,
+Creador, Padre y Redentor mío;
+por ser Tú quien eres, Bondad infinita,
+y porque te amo sobre todas las cosas,
+me pesa de todo corazón haberte ofendido.
+También me pesa porque puedes castigarme con las penas del infierno.
+Ayudado de tu divina gracia,
+propongo firmemente nunca más pecar,
+confesarme y cumplir la penitencia que me fuere impuesta.
+Amén.`,
+
+padre:`Padre nuestro, que estás en el cielo,
+santificado sea tu Nombre;
+venga a nosotros tu reino;
+hágase tu voluntad en la tierra como en el cielo.
+Danos hoy nuestro pan de cada día;
+perdona nuestras ofensas
+como también nosotros perdonamos a los que nos ofenden;
+no nos dejes caer en la tentación
+y líbranos del mal.
+Amén.`,
+
+ave:`Dios te salve, María,
+llena eres de gracia;
+el Señor es contigo;
+bendita Tú eres entre todas las mujeres,
+y bendito es el fruto de tu vientre, Jesús.
+Santa María, Madre de Dios,
+ruega por nosotros, pecadores,
+ahora y en la hora de nuestra muerte.
+Amén.`,
+
+gloria:`Gloria al Padre y al Hijo
+y al Espíritu Santo.
+Como era en el principio,
+ahora y siempre,
+por los siglos de los siglos.
+Amén.`
+
+};
+
+/* MISTERIOS */
+
+const MISTERIOS={
+titulo:"Misterios Gloriosos",
+dias:"Miércoles, Sábado y Domingo",
+lista:[
+{num:1,titulo:"La Resurrección de Jesucristo",desc:"Al tercer día Jesús resucita.",fruto:"Fe en la resurrección"},
+{num:2,titulo:"La Ascensión del Señor",desc:"Jesús sube al cielo.",fruto:"Esperanza"},
+{num:3,titulo:"Pentecostés",desc:"El Espíritu Santo desciende sobre los Apóstoles.",fruto:"Amor a Dios"},
+{num:4,titulo:"La Asunción de María",desc:"María es llevada al cielo.",fruto:"Devoción a María"},
+{num:5,titulo:"La Coronación de María",desc:"María es coronada Reina del Cielo.",fruto:"Confianza en su intercesión"}
+]
+};
+
+function iniciar(){
+
+let html=`<h4>${MISTERIOS.titulo}</h4><p>${MISTERIOS.dias}</p>`;
+
+html+=crearOracion("Señal de la Cruz",ORACIONES.senal,"o1");
+html+=crearOracion("Credo",ORACIONES.credo,"o2");
+html+=crearOracion("Jaculatoria Inicial",ORACIONES.abreLabios,"o3");
+html+=crearOracion("Acto de Contrición",ORACIONES.contricion,"o4");
+html+=crearOracion("Padre Nuestro",ORACIONES.padre,"o5");
+html+=crearOracion("Tres Ave Marías",ORACIONES.ave+"\n\n(Rezar tres veces)","o6");
+html+=crearOracion("Gloria",ORACIONES.gloria,"o7");
+
+MISTERIOS.lista.forEach((m,i)=>{
+html+=`
+<div class="card-dark">
+<h6>${m.num}° — ${m.titulo}</h6>
+<p>${m.desc}</p>
+<p><strong>Fruto:</strong> ${m.fruto}</p>
+
+${crearOracion("Padre Nuestro",ORACIONES.padre,"p"+i)}
+${crearRosario()}
+${crearOracion("Ave María",ORACIONES.ave,"a"+i)}
+${crearOracion("Gloria",ORACIONES.gloria,"g"+i)}
+
+</div>`;
+});
+
+document.getElementById("contenido").innerHTML=html;
+
+botones=[...document.querySelectorAll(".paso-btn")];
+
+botones.forEach((btn,index)=>{
+btn.onclick=function(){
+let id=this.nextElementSibling.id;
+toggle(id,index);
+};
+});
+
+marcarPaso(0);
+}
+
+iniciar();
+
+</script>
+
+</body>
+</html>
