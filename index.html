@@ -216,6 +216,7 @@
         animation-delay: 0.15s;
       }
       .nav-label {
+        text-align: center;
         font-family: "Cinzel", serif;
         font-size: 10px;
         letter-spacing: 0.25em;
@@ -225,11 +226,30 @@
         padding-left: 2px;
       }
 
+      /* Centrar títulos de primeras dos secciones */
+      .nav-section:nth-of-type(1) .nav-label,
+      .nav-section:nth-of-type(2) .nav-label {
+        text-align: center;
+        padding-left: 0;
+      }
+
       /* ── KEY CHANGE: grid instead of flex-wrap ── */
       .nav-pills {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
         gap: 8px;
+      }
+
+      /* Centrar botones en secciones iniciales */
+      #introNavTop,
+      #introNavBottom,
+      #oracionesNav {
+        grid-template-columns: repeat(auto-fit, 130px);
+        justify-content: center;
+      }
+
+      #introNavTop {
+        margin-bottom: 16px;
       }
 
       .nav-pill {
@@ -823,7 +843,13 @@
 
       <div class="nav-section">
         <div class="nav-label">Introducción</div>
-        <div class="nav-pills" id="introNav"></div>
+        <div class="nav-pills" id="introNavTop"></div>
+        <div class="nav-pills" id="introNavBottom"></div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Oraciones Iniciales</div>
+        <div class="nav-pills" id="oracionesNav"></div>
       </div>
 
       <div class="separator"><span>✦ Misterios ✦</span></div>
@@ -926,12 +952,16 @@
           texto: `Creo en Dios Padre Todopoderoso,\nCreador del cielo y de la tierra.\n\nCreo en Jesucristo, su único Hijo, Nuestro Señor,\nque fue concebido por obra y gracia del Espíritu Santo,\nnació de Santa María Virgen,\npadeció bajo el poder de Poncio Pilato,\nfue crucificado, muerto y sepultado,\ndescendió a los infiernos,\nal tercer día resucitó de entre los muertos,\nsubió a los cielos\ny está sentado a la derecha de Dios Padre Todopoderoso.\nDesde allí ha de venir a juzgar a vivos y muertos.\n\nCreo en el Espíritu Santo,\nla Santa Iglesia Católica,\nla comunión de los santos,\nel perdón de los pecados,\nla resurrección de la carne\ny la vida eterna.\nAmén.`,
         },
         abreLabios: {
-          titulo: "Jaculatoria Inicial",
+          titulo: "Invocación Inicial",
           texto: `Abre Señor mis labios,\npara alabar tu nombre\ny el de Tu Santa Madre.`,
         },
         contricion: {
           titulo: "Acto de Contrición",
           texto: `Señor mío Jesucristo,\nDios y Hombre verdadero,\nCreador, Padre y Redentor mío;\npor ser Tú quien eres, Bondad infinita,\ny porque te amo sobre todas las cosas,\nme pesa de todo corazón haberte ofendido.\nTambién me pesa porque puedes castigarme con las penas del infierno.\nAyudado de tu divina gracia,\npropongo firmemente nunca más pecar,\nconfesarme y cumplir la penitencia que me fuere impuesta.\nAmén.`,
+        },
+        ofrecimiento: {
+          titulo: "Ofrecimiento",
+          texto: `Divino Jesús, te ofrecemos este rosario para contemplar los misterios de nuestra redención. Concédenos, por la intercesión de María, tu Madre Santísima, las gracias necesarias para rezarlo bien y ganar las indulgencias de esta santa devoción.`,
         },
         padre: {
           titulo: "Padre Nuestro",
@@ -943,7 +973,7 @@
         },
         tresAves: {
           titulo: "Tres Ave Marías",
-          texto: `Dios te salve, María,\nllena eres de gracia;\nel Señor es contigo;\nbendita Tú eres entre todas las mujeres,\ny bendito es el fruto de tu vientre, Jesús.\n\nSanta María, Madre de Dios,\nruega por nosotros, pecadores,\nahora y en la hora de nuestra muerte.\nAmén.\n\n✦ ✦ ✦\n(Rezar tres veces)`,
+          texto: `Honremos a María: Hija bien amada del Padre Eterno:\nDios te salve, María, llena eres de gracia, el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús.\nSanta María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.\n\nHonremos a María: Madre admirable de Dios Hijo:\nDios te salve, María, llena eres de gracia, el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús.\nSanta María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.\n\nHonremos a María: Esposa Fidelísima del Espíritu Santo:\nDios te salve, María, llena eres de gracia, el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús.\nSanta María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.`,
         },
         gloria: {
           titulo: "Gloria",
@@ -955,11 +985,11 @@
         },
         mariaGracia: {
           titulo: "María, Madre de Gracia",
-          texto: `María, Madre de gracia,\nMadre de misericordia.\nDefiéndenos de nuestros enemigos\ny ampáranos ahora y en la hora de nuestra muerte.\nAmén.`,
+          texto: `María, madre de gracia y madre de misericordia, en la vida y en la muerte, ampáranos gran señora.`,
         },
         letanias: {
           titulo: "Letanías Lauretanas",
-          texto: `Santa María, ruega por nosotros.\nSanta Madre de Dios, ruega por nosotros.\nSanta Virgen de las vírgenes, ruega por nosotros.\nMadre de Cristo, ruega por nosotros.\nMadre de la Iglesia, ruega por nosotros.\nMadre de Misericordia, ruega por nosotros.\nReina del Santo Rosario, ruega por nosotros.\nReina de la paz, ruega por nosotros.`,
+          texto: `Señor, ten piedad.\n Cristo, ten piedad.\nSeñor, ten piedad.\nDios Padre celestial, ten piedad de nosotros.\nSanta María, ruega por nosotros.\nMadre de la Iglesia, ruega por nosotros.\nMadre de la divina gracia, ruega por nosotros.\nMadre purísima, ruega por nosotros.\nEspejo de justicia, ruega por nosotros.\nTrono de sabiduría, ruega por nosotros.\nSalud de los enfermos, ruega por nosotros.\nRefugio de los pecadores, ruega por nosotros.\nReina del Santísimo Rosario, ruega por nosotros.\nReina de la familia, ruega por nosotros.\nReina de la paz, ruega por nosotros.`,
         },
         cordero: {
           titulo: "Cordero de Dios",
@@ -976,6 +1006,27 @@
         jacFinal: {
           titulo: "Jaculatoria Final",
           texto: `Ave María Purísima.\nR: Sin pecado concebida.\n\n📿`,
+        },
+        oracionSantuario: {
+          titulo: "Oración por el Santuario",
+          texto: `Oh soberano santuario, sagrario del Verbo eterno, libra Virgen del infierno a los que rezamos tu Santo Rosario. Emperatriz poderosa de los mortales consuelo, ábrenos Virgen el cielo con una muerte dichosa y danos pureza de alma, ya que eres tan poderosa.`,
+        },
+        tresAvesFinales: {
+          titulo: "Tres Ave Marías Finales",
+          texto: `Dios te salve, María Santísima, Hija de Dios Padre, Virgen Purísima antes del parto; en tus manos ponemos nuestra fe para que la ilumines. Llena eres de gracia... 
+(Avemaría completa).\n\nDios te salve, María Santísima, Madre de Dios Hijo, Virgen Purísima en el parto; en tus manos ponemos nuestra esperanza para que la alientes. Llena eres de gracia... (Avemaría completa).\n\nDios te salve, María Santísima, Esposa de Dios Espíritu Santo, Virgen Purísima después del parto; en tus manos ponemos nuestra caridad para que la inflames. Llena eres de gracia... (Avemaría completa).`,
+        },
+        bajoAmparo: {
+          titulo: "Bajo tu amparo",
+          texto: `Bajo tu amparo nos acogemos, Santa Madre de Dios; no deseches las súplicas que te dirigimos en nuestras necesidades; antes bien, líbranos de todo peligro, oh Virgen gloriosa y bendita. Amén.`,
+        },
+        oracionSanMiguel: {
+          titulo: "Oración a San Miguel Arcángel",
+          texto: `San Miguel Arcángel, defiéndenos en la lucha; sé nuestro amparo contra la perversidad y acechanzas del demonio. Tú, príncipe de la milicia celestial, arroja al infierno con el divino poder a Satanás y a los demás espíritus malignos que vagan por el mundo para la perdición de las almas. Amén.`,
+        },
+        despedida: {
+          titulo: "Despedida",
+          texto: `Dulce Madre, no te alejes, tu vista de nosotros no apartes; ven con nosotros a todas partes y solos nunca nos dejes. Ya que nos proteges tanto, haz que nos bendiga el Padre, el Hijo y el Espíritu Santo, Amén.`,
         },
       };
 
@@ -1142,22 +1193,30 @@
       function buildPasos() {
         pasos = [];
         const M = MISTERIOS_SET[misterioActivo];
-        const introKeys = [
+        const introKeys1 = [
           "senal",
-          "credo",
           "abreLabios",
           "contricion",
-          "padre",
-          "tresAves",
-          "gloria",
+          "ofrecimiento",
+          "credo",
         ];
-        introKeys.forEach((k, i) =>
+        introKeys1.forEach((k, i) =>
           pasos.push({
             id: k,
             ...ORACIONES[k],
             seccion: "Introducción",
             seccionPaso: i + 1,
-            seccionTotal: introKeys.length,
+            seccionTotal: introKeys1.length,
+          }),
+        );
+        const introKeys2 = ["padre", "tresAves", "gloria"];
+        introKeys2.forEach((k, i) =>
+          pasos.push({
+            id: k,
+            ...ORACIONES[k],
+            seccion: "Oraciones Iniciales",
+            seccionPaso: i + 1,
+            seccionTotal: introKeys2.length,
           }),
         );
         M.lista.forEach((m, i) => {
@@ -1178,14 +1237,14 @@
               texto: ORACIONES.gloria.texto,
             },
             {
-              id: `m${i}_fatima`,
-              titulo: `${m.num}° · Fátima`,
-              texto: ORACIONES.fatima.texto,
-            },
-            {
               id: `m${i}_gracia`,
               titulo: `${m.num}° · Madre de Gracia`,
               texto: ORACIONES.mariaGracia.texto,
+            },
+            {
+              id: `m${i}_fatima`,
+              titulo: `${m.num}° · Fátima`,
+              texto: ORACIONES.fatima.texto,
             },
           ];
           sub.forEach((p, j) =>
@@ -1198,11 +1257,14 @@
           );
         });
         const finalKeys = [
+          "oracionSantuario",
+          "tresAvesFinales",
+          "salve",
           "letanias",
           "cordero",
-          "oracionFinal",
-          "salve",
-          "jacFinal",
+          "bajoAmparo",
+          "oracionSanMiguel",
+          "despedida",
         ];
         finalKeys.forEach((k, i) =>
           pasos.push({
@@ -1235,30 +1297,42 @@
       }
 
       function renderIntroNav() {
-        const keys = [
-          "senal",
-          "credo",
-          "abreLabios",
-          "contricion",
-          "padre",
-          "tresAves",
-          "gloria",
-        ];
-        const labels = [
-          "✝ Señal",
-          "Credo",
-          "Jaculatoria",
-          "Contrición",
-          "Padre Nuestro",
-          "3 Ave Marías",
-          "Gloria",
-        ];
-        const cont = document.getElementById("introNav");
-        cont.innerHTML = "";
-        keys.forEach((k, i) =>
-          cont.appendChild(
+        const keysTop = ["senal", "abreLabios"];
+        const labelsTop = ["✝ Señal", "Invocación"];
+        const contTop = document.getElementById("introNavTop");
+        contTop.innerHTML = "";
+        keysTop.forEach((k, i) =>
+          contTop.appendChild(
             makePill(
-              labels[i],
+              labelsTop[i],
+              pasos.findIndex((p) => p.id === k),
+              i + 1,
+            ),
+          ),
+        );
+
+        const keysBottom = ["contricion", "ofrecimiento", "credo"];
+        const labelsBottom = ["Contrición", "Ofrecimiento", "Credo"];
+        const contBottom = document.getElementById("introNavBottom");
+        contBottom.innerHTML = "";
+        keysBottom.forEach((k, i) =>
+          contBottom.appendChild(
+            makePill(
+              labelsBottom[i],
+              pasos.findIndex((p) => p.id === k),
+              i + 1,
+            ),
+          ),
+        );
+
+        const keys2 = ["padre", "tresAves", "gloria"];
+        const labels2 = ["Padre Nuestro", "3 Ave Marías", "Gloria"];
+        const cont2 = document.getElementById("oracionesNav");
+        cont2.innerHTML = "";
+        keys2.forEach((k, i) =>
+          cont2.appendChild(
+            makePill(
+              labels2[i],
               pasos.findIndex((p) => p.id === k),
               i + 1,
             ),
@@ -1268,18 +1342,24 @@
 
       function renderFinalNav() {
         const keys = [
+          "oracionSantuario",
+          "tresAvesFinales",
+          "salve",
           "letanias",
           "cordero",
-          "oracionFinal",
-          "salve",
-          "jacFinal",
+          "bajoAmparo",
+          "oracionSanMiguel",
+          "despedida",
         ];
         const labels = [
+          "Oración por el Santuario",
+          "3 Ave Marías Finales",
+          "Salve Regina",
           "Letanías",
           "Cordero de Dios",
-          "Oración Final",
-          "Salve Regina",
-          "Jaculatoria",
+          "Bajo tu amparo",
+          "Oración a San Miguel",
+          "Despedida",
         ];
         const cont = document.getElementById("finalNav");
         cont.innerHTML = "";
@@ -1348,8 +1428,8 @@
                 <button class="mini-btn" data-idx="${ip}"  onclick="mostrarPaso(${ip})"><span class="pill-num">1</span><span class="pill-label">Padre Nuestro</span></button>
                 <button class="mini-btn" data-idx="${ia}"  onclick="mostrarPaso(${ia})"><span class="pill-num">2</span><span class="pill-label">Ave María ×10</span></button>
                 <button class="mini-btn" data-idx="${ig}"  onclick="mostrarPaso(${ig})"><span class="pill-num">3</span><span class="pill-label">Gloria</span></button>
-                <button class="mini-btn" data-idx="${ift}" onclick="mostrarPaso(${ift})"><span class="pill-num">4</span><span class="pill-label">Fátima</span></button>
-                <button class="mini-btn" data-idx="${igr}" onclick="mostrarPaso(${igr})"><span class="pill-num">5</span><span class="pill-label">Madre de Gracia</span></button>
+                <button class="mini-btn" data-idx="${igr}" onclick="mostrarPaso(${igr})"><span class="pill-num">4</span><span class="pill-label">Madre de Gracia</span></button>
+                <button class="mini-btn" data-idx="${ift}" onclick="mostrarPaso(${ift})"><span class="pill-num">5</span><span class="pill-label">Fátima</span></button>
                 <button class="mini-btn" onclick="abrirTimer()">⏱ Meditar</button>
               </div>
               <div style="margin-top:14px">
